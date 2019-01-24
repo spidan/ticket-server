@@ -10,7 +10,9 @@ public class Echo {
 
 	@GetMapping("/echo")
 	@ResponseBody
-	public String echoInput(@RequestParam(name = "message", required = false, defaultValue = "echoService") String message) {
+	public String echoInput(@RequestParam(name = "message",
+					required = false,
+					defaultValue = "echoService") final String message) {
 		return message;
 	}
 }
