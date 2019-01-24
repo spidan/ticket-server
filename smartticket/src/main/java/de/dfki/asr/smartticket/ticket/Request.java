@@ -1,5 +1,6 @@
 package de.dfki.asr.smartticket.ticket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.apache.http.HttpEntity;
@@ -19,7 +20,7 @@ public class Request {
 		this.configuration = configuration;
 	}
 	
-	public HttpResponse send() throws IOException {
+	public HttpResponse send() throws JsonProcessingException, IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpPost postRequest = new HttpPost(TICKET_URL);
 		ObjectMapper mapper = new ObjectMapper();
