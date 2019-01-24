@@ -13,9 +13,9 @@ import org.apache.http.impl.client.HttpClients;
 
 public class Request {
 	
-	private final String TICKET_URL = "http://localhost:8080/ticket";
+	private static final String TICKET_URL = "http://localhost:8080/ticket";
 	private final TicketConfiguration configuration;
-	
+
 	public Request(TicketConfiguration configuration) {
 		this.configuration = configuration;
 	}
