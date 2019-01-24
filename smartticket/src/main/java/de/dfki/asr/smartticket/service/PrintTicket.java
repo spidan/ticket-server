@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 public class PrintTicket {
-	Logger logger = LoggerFactory.getLogger(PrintTicket.class);
+	private final Logger logger = LoggerFactory.getLogger(PrintTicket.class);
 
 	@RequestMapping(value = "/printTicket",
 			method = RequestMethod.POST,
 			consumes = "application/json")
 	@ResponseBody
-	public String receiveTicket(@RequestBody TicketConfiguration config) {
+	public String receiveTicket(@RequestBody final TicketConfiguration config) {
 		Request ticketRequest = new Request(config);
 		try {
 			HttpResponse response = ticketRequest.send();
@@ -36,13 +36,13 @@ public class PrintTicket {
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	private String handleIoException(IOException ex) {
+	private String handleIoException(final IOException ex) {
 		logger.error("Error in connection: " + ex.getMessage());
 		return ex.getMessage();
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	private String handleJsonException(JsonProcessingException ex) {
+	private String handleJsonException(final JsonProcessingException ex) {
 		logger.error("Invalid JSON in input: " + ex.getMessage());
 		return ex.getMessage();
 	}

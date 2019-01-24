@@ -12,14 +12,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 public class Request {
-	
+
 	private static final String TICKET_URL = "http://localhost:8080/ticket";
 	private final TicketConfiguration configuration;
 
-	public Request(TicketConfiguration configuration) {
-		this.configuration = configuration;
+	public Request(final TicketConfiguration config) {
+		this.configuration = config;
 	}
-	
+
 	public HttpResponse send() throws JsonProcessingException, IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
 		HttpPost postRequest = new HttpPost(TICKET_URL);
