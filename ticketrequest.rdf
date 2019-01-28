@@ -1,0 +1,4 @@
+@prefix sm: <http://www.smartmaas.de/sm-ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+sm:booking rdf:type sm:verified-booking .
