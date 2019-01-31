@@ -15,6 +15,7 @@ public class InMemoryRepo {
 
 	public InMemoryRepo() {
 		repo = new SailRepository(new MemoryStore());
+		repo.initialize();
 	}
 
 	public void write(final Iterable<SimpleStatement> statements) {
