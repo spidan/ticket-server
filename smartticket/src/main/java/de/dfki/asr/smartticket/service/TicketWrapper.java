@@ -20,6 +20,7 @@ public class TicketWrapper {
 
 	public String receiveTicket() {
 		TicketConfiguration config = new TicketConfiguration();
+		config.getData(repo);
 		Request ticketRequest = new Request(config);
 		try {
 			HttpResponse response = ticketRequest.send();
