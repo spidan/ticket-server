@@ -1,5 +1,6 @@
 package de.dfki.asr.smartticket.data;
 
+import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.SimpleStatement;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -22,6 +23,18 @@ public class InMemoryRepo {
 		try (RepositoryConnection con = repo.getConnection()) {
 			con.add(statements);
 		} catch (RepositoryException ex) {
+			LOG.error("Failed to access triplestore: " + ex.getMessage());
+		}
+	}
+
+	public void write(final Model model) {
+		try (RepositoryConnection con = repo.getConnection()) {
+		    con.begin();
+		    con.add(model);
+		    con.commit();
+		}
+
+		catch (RepositoryException ex) {
 			LOG.error("Failed to access triplestore: " + ex.getMessage());
 		}
 	}
