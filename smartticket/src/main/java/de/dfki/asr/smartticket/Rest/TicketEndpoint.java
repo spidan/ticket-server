@@ -22,7 +22,7 @@ public class TicketEndpoint {
 	public String receiveTicket(@RequestBody final Model model) {
 	    BookingProcess booking = new BookingProcess();
 	    booking.writeRequestToRepo(model);
-	    TicketWrapper ticket = new TicketWrapper();
+	    TicketWrapper ticket = new TicketWrapper(booking.getRepo());
 	    return ticket.receiveTicket();
 	}
 
