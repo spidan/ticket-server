@@ -18,4 +18,8 @@ public class TicketConfiguration {
 	private String name;
 	@Getter@Setter
 	private String iata;
+
+	public void getData(final InMemoryRepo repo) {
+	    LOG.info(repo.getValue("hasBeginning"));
+	}
 }
