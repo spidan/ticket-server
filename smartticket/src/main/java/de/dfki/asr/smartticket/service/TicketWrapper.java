@@ -2,6 +2,7 @@ package de.dfki.asr.smartticket.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
+import de.dfki.asr.smartticket.data.InMemoryRepo;
 import de.dfki.asr.smartticket.ticket.Request;
 import de.dfki.asr.smartticket.ticket.TicketConfiguration;
 import java.io.IOException;
@@ -11,6 +12,11 @@ import org.slf4j.LoggerFactory;
 
 public class TicketWrapper {
 	private final Logger logger = LoggerFactory.getLogger(TicketWrapper.class);
+	private final InMemoryRepo repo;
+
+	public TicketWrapper(final InMemoryRepo processRepo) {
+	    this.repo = processRepo;
+	}
 
 	public String receiveTicket() {
 		TicketConfiguration config = new TicketConfiguration();
