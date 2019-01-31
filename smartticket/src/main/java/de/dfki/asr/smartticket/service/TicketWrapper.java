@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TicketWrapper {
-	private final Logger logger = LoggerFactory.getLogger(TicketWrapper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);
 	private final InMemoryRepo repo;
 
 	public TicketWrapper(final InMemoryRepo processRepo) {
@@ -25,10 +25,10 @@ public class TicketWrapper {
 			HttpResponse response = ticketRequest.send();
 			return response.toString();
 		} catch (JsonProcessingException ex) {
-			logger.error("Invalid JSON in input: " + ex.getMessage());
+			LOG.error("Invalid JSON in input: " + ex.getMessage());
 			return SpringExceptionHandlers.handleJsonException(ex);
 		} catch (IOException ex) {
-			logger.error("Error in connection: " + ex.getMessage());
+			LOG.error("Error in connection: " + ex.getMessage());
 			return SpringExceptionHandlers.handleIoException(ex);
 		}
 	}
