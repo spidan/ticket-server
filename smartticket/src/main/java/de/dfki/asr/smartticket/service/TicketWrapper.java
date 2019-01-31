@@ -9,10 +9,11 @@ import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PrintTicket {
-	private final Logger logger = LoggerFactory.getLogger(PrintTicket.class);
+public class TicketWrapper {
+	private final Logger logger = LoggerFactory.getLogger(TicketWrapper.class);
 
-	public String receiveTicket(final TicketConfiguration config) {
+	public String receiveTicket() {
+		TicketConfiguration config = new TicketConfiguration();
 		Request ticketRequest = new Request(config);
 		try {
 			HttpResponse response = ticketRequest.send();
