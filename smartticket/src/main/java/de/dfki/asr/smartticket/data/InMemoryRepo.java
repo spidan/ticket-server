@@ -2,6 +2,9 @@ package de.dfki.asr.smartticket.data;
 
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.SimpleStatement;
+import org.eclipse.rdf4j.query.MalformedQueryException;
+import org.eclipse.rdf4j.query.TupleQuery;
+import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
@@ -37,5 +40,25 @@ public class InMemoryRepo {
 		catch (RepositoryException ex) {
 			LOG.error("Failed to access triplestore: " + ex.getMessage());
 		}
+	}
+
+	public String getValue(final String property) {
+	    try (RepositoryConnection con = repo.getConnection()) {
+		String queryString = "prefix sm: <http://www.smartmaas.de/sm-ns#> "
+				    + "prefix time: 	<http://www.w3.org/2006/time#> "
+				    + "SELECT ?p WHERE {sm:booking time:" + property + " ?p }";
+		TupleQuery query = con.prepareTupleQuery(queryString);
+		TupleQueryResult result = query.evaluate();
+		StringBuilder buf = new StringBuilder();
+		while (result.hasNext()) {
+		    buf.append(" --").append(result.next().getValue("p").stringValue());
+		}
+		return buf.toString();
+	    } catch (RepositoryException ex) {
+		LOG.error("Error querying the repo for property " + property + ": " + ex.getMessage());
+	    } catch (MalformedQueryException ex) {
+		LOG.error("Malformed query while getting data: " + ex.getMessage());
+	    }
+	    return "No results found";
 	}
 }
