@@ -50,8 +50,8 @@ public class InMemoryRepo {
 		TupleQuery query = con.prepareTupleQuery(queryString);
 		TupleQueryResult result = query.evaluate();
 		StringBuilder buf = new StringBuilder();
-		while (result.hasNext()) {
-		    buf.append(" --").append(result.next().getValue("p").stringValue());
+		if (result.hasNext()) {
+		    return result.next().getValue("p").stringValue();
 		}
 		return buf.toString();
 	    } catch (RepositoryException ex) {
