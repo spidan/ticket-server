@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TicketConfiguration {
+
 	private static final Logger LOG = LoggerFactory.getLogger(TicketConfiguration.class);
 	private static final String API_TOKEN = "TICKET_API_TOKEN_3_STRING";
 	private static final String NAME = "Dummyticket zum Servicetesten";

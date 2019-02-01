@@ -36,7 +36,6 @@ public class InMemoryRepo {
 		    con.add(model);
 		    con.commit();
 		}
-
 		catch (RepositoryException ex) {
 			LOG.error("Failed to access triplestore: " + ex.getMessage());
 		}
