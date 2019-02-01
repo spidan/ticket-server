@@ -1,9 +1,8 @@
 package de.dfki.asr.smartticket.Rest;
 
-import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
+import de.dfki.asr.smartticket.service.BookingProcess;
+import de.dfki.asr.smartticket.service.TicketWrapper;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.rio.RDFParseException;
-import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,16 +20,9 @@ public class TicketEndpoint {
 			consumes = "text/turtle")
 	@ResponseBody
 	public String receiveTicket(@RequestBody final Model model) {
-		try {
-			LOG.debug(model.toString());
-			return model.toString();
-		} catch (RDFParseException ex) {
-			LOG.error("Error parsing RDF: " + ex.getMessage());
-			return SpringExceptionHandlers.handleRDFParseException(ex);
-		} catch (UnsupportedRDFormatException ex) {
-			LOG.error(ex.getMessage());
-			return SpringExceptionHandlers.handleRDFFormatException(ex);
-		}
+	    BookingProcess booking = new BookingProcess();
+	    booking.writeRequestToRepo(model);
+	    TicketWrapper ticket = new TicketWrapper(booking.getRepo());
+	    return ticket.receiveTicket();
 	}
-
 }
