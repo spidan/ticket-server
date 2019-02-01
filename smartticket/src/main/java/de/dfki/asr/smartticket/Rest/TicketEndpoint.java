@@ -25,5 +25,4 @@ public class TicketEndpoint {
 	    TicketWrapper ticket = new TicketWrapper(booking.getRepo());
 	    return ticket.receiveTicket();
 	}
-
 }
