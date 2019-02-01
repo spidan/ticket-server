@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 
 public class TicketConfiguration {
 	private static final Logger LOG = LoggerFactory.getLogger(TicketConfiguration.class);
+	private static final String API_TOKEN = "TICKET_API_TOKEN_3_STRING";
+	private static final String NAME = "Dummyticket zum Servicetesten";
+	private static final String IATA = "aktuell ignoriertes Feld";
+
 	@Getter@Setter
 	private String apiToken;
 	@Getter@Setter
@@ -20,6 +24,10 @@ public class TicketConfiguration {
 	private String iata;
 
 	public void getData(final InMemoryRepo repo) {
-	    LOG.info(repo.getValue("hasBeginning"));
+	    begin = repo.getValue("hasBeginning");
+	    end = repo.getValue("hasEnd");
+	    apiToken = API_TOKEN;
+	    name = NAME;
+	    iata = IATA;
 	}
 }
