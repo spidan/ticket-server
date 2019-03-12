@@ -25,8 +25,8 @@ public class TicketConfiguration {
 	private String iata;
 
 	public void getData(final InMemoryRepo repo) {
-	    begin = repo.getValue("hasBeginning");
-	    end = repo.getValue("hasEnd");
+	    begin = repo.getValue("validFrom");
+	    end = repo.getValue("validThrough");
 	    apiToken = API_TOKEN;
 	    name = NAME;
 	    iata = IATA;
