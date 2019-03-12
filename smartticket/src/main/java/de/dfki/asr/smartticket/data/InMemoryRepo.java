@@ -44,8 +44,8 @@ public class InMemoryRepo {
 	public String getValue(final String property) {
 	    try (RepositoryConnection con = repo.getConnection()) {
 		String queryString = "prefix sm: <http://www.smartmaas.de/sm-ns#> "
-				    + "prefix time: 	<http://www.w3.org/2006/time#> "
-				    + "SELECT ?p WHERE {sm:booking time:" + property + " ?p }";
+				    + "prefix gr: 	<http://purl.org/goodrelations/v1#> "
+				    + "SELECT ?p WHERE {sm:offer1 gr:" + property + " ?p }";
 		TupleQuery query = con.prepareTupleQuery(queryString);
 		TupleQueryResult result = query.evaluate();
 		StringBuilder buf = new StringBuilder();
