@@ -1,10 +1,22 @@
 @prefix sm: 	<http://www.smartmaas.de/sm-ns#> .
+@prefix tio:	<http://purl.org/tio/ns#> .
 @prefix rdf: 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: 	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix time: 	<http://www.w3.org/2006/time#> .
+@prefix gr:     <http://purl.org/goodrelations/v1#> .
 
-sm:booking rdf:type sm:verified-booking .
-sm:booking
-	rdfs:label "Tagesticket" ;
-	time:hasBeginning "2019-02-01T08:00:00"^^xsd:dateTime ;
-	time:hasEnd "2019-02-02T08:00:00"^^xsd:dateTime .
+sm:linie124 a tio:CoachService ;
+	tio:from
+	tio:to
+
+sm:ticket1 a tio:TicketPlaceholder ;
+	rdfs:label "Busticket von Universität zum Hauptbahnhof"@de ;
+	tio:accessTo sm:linie124 .
+
+sm:SaarVV gr:offers sm:offer1 .
+
+sm:offer1 a gr:offering ;
+	gr:name "Tagesticket" ;
+	gr:includes sm:ticket1 ;
+	gr:validFrom "2019-02-01T08:00:00"^^xsd:dateTime ;
+	gr:validThrough "2019-02-02T08:00:00"^^xsd:dateTime .
