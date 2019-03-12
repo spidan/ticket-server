@@ -7,7 +7,7 @@
 
 sm:linie124 a tio:CoachService ;
 	tio:from
-	tio:to
+	tio:to .
 
 sm:ticket1 a tio:TicketPlaceholder ;
 	rdfs:label "Busticket von Universität zum Hauptbahnhof"@de ;
