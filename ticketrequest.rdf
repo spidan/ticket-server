@@ -18,5 +18,5 @@ sm:SaarVV gr:offers sm:offer1 .
 sm:offer1 a gr:offering ;
 	gr:name "Tagesticket" ;
 	gr:includes sm:ticket1 ;
-	gr:validFrom "2019-02-01T08:00:00"^^xsd:dateTime ;
-	gr:validThrough "2019-02-02T08:00:00"^^xsd:dateTime .
+	gr:validFrom "2019-04-01T08:00:00"^^xsd:dateTime ;
+	gr:validThrough "2019-04-02T08:00:00"^^xsd:dateTime .
