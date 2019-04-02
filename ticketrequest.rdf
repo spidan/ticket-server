@@ -6,8 +6,8 @@
 @prefix gr:     <http://purl.org/goodrelations/v1#> .
 
 sm:linie124 a tio:CoachService ;
-	tio:from
-	tio:to .
+	tio:from <http://resource.for/SaarVV_Uni_Campus> ;
+	tio:to <http://resource.for/SaarVV_Hauptbahnhof> .
 
 sm:ticket1 a tio:TicketPlaceholder ;
 	rdfs:label "Busticket von Universität zum Hauptbahnhof"@de ;
