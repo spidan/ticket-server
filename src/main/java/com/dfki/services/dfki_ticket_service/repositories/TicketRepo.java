@@ -45,4 +45,40 @@ public class TicketRepo {
             return stringBuilder.toString();
         }
     }
+
+    public String getObject(String subjectPrefix, String subject, String predicatePrefix, String predicate) {
+        try (RepositoryConnection connection = repository.getConnection()) {
+            String queryString = "prefix sm: <http://www.smartmaas.de/sm-ns#> "
+                    + "prefix gr: 	<http://purl.org/goodrelations/v1#> "
+                    + "prefix tio: 	<http://purl.org/tio/ns#> "
+                    + "SELECT ?p WHERE {" + subjectPrefix + ":" + subject + " " + predicatePrefix + ":" + predicate + " ?p }";
+            TupleQuery query = connection.prepareTupleQuery(queryString);
+            TupleQueryResult result = query.evaluate();
+            StringBuilder stringBuilder = new StringBuilder();
+            if (result.hasNext()) {
+                return result.next().getValue("p").stringValue();
+            }
+            return stringBuilder.toString();
+        }
+    }
+
+    public String getType(String subjectPrefix, String subject, String typePrefix) {
+        try (RepositoryConnection connection = repository.getConnection()) {
+            String queryString = "prefix sm: <http://www.smartmaas.de/sm-ns#> "
+                    + "prefix gr: 	<http://purl.org/goodrelations/v1#> "
+                    + "prefix tio: 	<http://purl.org/tio/ns#> "
+                    + "prefix rdf: 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                    + "SELECT ?type WHERE {" + subjectPrefix + ":" + subject.trim() + " a " + "?type .}";
+            System.out.println(queryString);
+            TupleQuery query = connection.prepareTupleQuery(queryString);
+            TupleQueryResult result = query.evaluate();
+            StringBuilder stringBuilder = new StringBuilder();
+            if (result.hasNext()) {
+                return result.next().getValue("type").stringValue();
+            }
+            return stringBuilder.toString();
+        }
+    }
+
+
 }

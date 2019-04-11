@@ -7,10 +7,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 public class Utils {
@@ -55,9 +65,15 @@ public class Utils {
     }
 
     public static Ticket getTicketFromDB(Ticket ticket, TicketRepo ticketRepo) {
-        ticket.setName(ticketRepo.getValue("name"));
-        ticket.setBegin(ticketRepo.getValue("validFrom"));
-        ticket.setEnd(ticketRepo.getValue("validThrough"));
+
+        ticket.setName(ticketRepo.getObject("sm", "offer1", "gr", "name"));
+        ticket.setBegin(ticketRepo.getObject("sm", "offer1", "gr", "validFrom"));
+        ticket.setEnd(ticketRepo.getObject("sm", "offer1", "gr", "validThrough"));
+        ticket.setIncludes(ticketRepo.getObject("sm", "offer1", "gr", "includes"));
+        ticket.setAccessedBus(ticketRepo.getObject("sm", ticket.getIncludes(), "tio", "accessTo"));
+        ticket.setFromStation(ticketRepo.getObject("sm", ticket.getAccessedBus(), "tio", "from"));
+        ticket.setToStation(ticketRepo.getObject("sm", ticket.getAccessedBus(), "tio", "to"));
+        ticket.setType(ticketRepo.getType("sm", ticket.getIncludes(), "tio"));
         return ticket;
     }
 
@@ -67,5 +83,35 @@ public class Utils {
 
         return jsonNode.toString().replaceAll(",", ",\n");
 
+    }
+
+    public static String convertObjectToXML(Object object) {
+        String xmlResult = null;
+        try {
+
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            StringWriter stringWriter = new StringWriter();
+            marshaller.marshal(object, stringWriter);
+            xmlResult = stringWriter.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return xmlResult;
+    }
+
+    public static ResponseEntity<String> postXmlData(String url, String xmlData) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("ticket_xml", xmlData);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_XML);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(params, httpHeaders);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        return response;
     }
 }

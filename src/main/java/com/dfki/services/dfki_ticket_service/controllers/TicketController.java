@@ -4,7 +4,9 @@ import com.dfki.services.dfki_ticket_service.Utils;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import org.eclipse.rdf4j.model.Model;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class TicketController {
     private TicketRepo ticketRepo;
 
-    @PostMapping(value = "save/ticket"/*,consumes = "text/turtle"*/)
+    @PostMapping(value = "ticket"/*,consumes = "text/turtle"*/)
     public ResponseEntity<?> saveTicket(@RequestBody String rdfInput) {
         try {
             ticketRepo = new TicketRepo();
@@ -21,9 +23,13 @@ public class TicketController {
 
             ticketRepo.save(model);
             Ticket ticket = Utils.getTicketFromDB(new Ticket(), ticketRepo);
-            String result = Utils.convertObjectToJson(ticket);
+            String jsonResult = Utils.convertObjectToJson(ticket);
 
-            return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+            String xmlResult = Utils.convertObjectToXML(ticket);
+            System.out.println(xmlResult);
+            String dummyServiceURL = "";
+//            ResponseEntity<String> responseEntity = Utils.postXmlData(dummyServiceURL, xmlResult);
+            return new ResponseEntity<>(jsonResult, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
