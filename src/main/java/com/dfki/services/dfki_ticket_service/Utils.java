@@ -4,6 +4,12 @@ import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
@@ -17,11 +23,11 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class Utils {
 
@@ -104,14 +110,40 @@ public class Utils {
         return xmlResult;
     }
 
-    public static ResponseEntity<String> postXmlData(String url, String xmlData) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.add("ticket_xml", xmlData);
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_XML);
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(params, httpHeaders);
-        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-        return response;
+    public static void sendXMLPostRequest(String link, String xmlData) {
+        try {
+
+            URL url = new URL(link);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/xml");
+
+            urlConnection.setDoOutput(true);
+            OutputStream outputStream = urlConnection.getOutputStream();
+            outputStream.write(xmlData.getBytes());
+            outputStream.flush();
+            outputStream.close();
+
+            int responseCode = urlConnection.getResponseCode();
+            System.out.println("POST Response Code :  " + responseCode);
+
+            System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
+            if (responseCode == HttpURLConnection.HTTP_ACCEPTED) { //success
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        urlConnection.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                System.out.println(response.toString());
+            } else {
+                System.out.println("POST NOT WORKED");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

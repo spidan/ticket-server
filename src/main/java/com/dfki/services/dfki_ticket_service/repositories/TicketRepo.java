@@ -69,7 +69,6 @@ public class TicketRepo {
                     + "prefix tio: 	<http://purl.org/tio/ns#> "
                     + "prefix rdf: 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
                     + "SELECT ?type WHERE {" + subjectPrefix + ":" + subject.trim() + " a " + "?type .}";
-            System.out.println(queryString);
             TupleQuery query = connection.prepareTupleQuery(queryString);
             TupleQueryResult result = query.evaluate();
             StringBuilder stringBuilder = new StringBuilder();
