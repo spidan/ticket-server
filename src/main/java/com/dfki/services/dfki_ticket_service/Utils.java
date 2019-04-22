@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.query.algebra.Str;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 import org.springframework.http.HttpEntity;
@@ -27,7 +28,10 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -146,4 +150,21 @@ public class Utils {
             e.printStackTrace();
         }
     }
+
+    public static Map<String, String> parsePrefixes(String rdf_input) {
+
+        Map<String, String> prefixes = new HashMap<>();
+        while (rdf_input.contains("@prefix ")) {
+            int prefixIndex = rdf_input.indexOf("@prefix ") + 8;
+            int semicolonIndex = rdf_input.indexOf(":");
+            int endOfLineIndex = rdf_input.indexOf("> .");
+            String prefix = rdf_input.substring(prefixIndex, semicolonIndex);
+            String url = rdf_input.substring(semicolonIndex, endOfLineIndex);
+            url = url.substring(url.indexOf("<") + 1);
+            prefixes.put(prefix, url);
+            rdf_input = rdf_input.substring(endOfLineIndex + 3);
+        }
+        return prefixes;
+    }
+
 }

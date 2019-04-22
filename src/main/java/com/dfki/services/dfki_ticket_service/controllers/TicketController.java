@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController("TicketController")
 public class TicketController {
@@ -18,15 +20,16 @@ public class TicketController {
         try {
             ticketRepo = new TicketRepo();
             Model model = Utils.turtleToRDFConverter(rdfInput);
-
+            Map<String, String> prefixes = Utils.parsePrefixes(rdfInput);
             ticketRepo.save(model);
             Ticket ticket = Utils.getTicketFromDB(new Ticket(), ticketRepo);
+            ticket.setPrefixes(prefixes);
             String jsonResult = Utils.convertObjectToJson(ticket);
 
             String xmlResult = Utils.convertObjectToXML(ticket);
 
             // Link for the VDV ticket Service
-            String vdv_ticket_service_url = "http://localhost:8801/vdv/ticket";
+            String vdv_ticket_service_url = "http://localhost:8802/vdv/ticket";
 
             Utils.sendXMLPostRequest(vdv_ticket_service_url, xmlResult);
             return new ResponseEntity<>(jsonResult, HttpStatus.ACCEPTED);

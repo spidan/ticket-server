@@ -4,6 +4,7 @@ package com.dfki.services.dfki_ticket_service.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.xml.bind.annotation.*;
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -24,7 +25,9 @@ public class Ticket {
     @JsonIgnore
     @XmlElement
     private String type;
-
+    @JsonIgnore
+    @XmlElement
+    private Map<String, String> prefixes;
 
     @Override
     public String toString() {
@@ -121,5 +124,13 @@ public class Ticket {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Map<String, String> getPrefixes() {
+        return prefixes;
+    }
+
+    public void setPrefixes(Map<String, String> prefixes) {
+        this.prefixes = prefixes;
     }
 }
