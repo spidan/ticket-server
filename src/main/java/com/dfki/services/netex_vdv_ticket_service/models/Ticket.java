@@ -1,10 +1,10 @@
 package com.dfki.services.netex_vdv_ticket_service.models;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -21,7 +21,8 @@ public class Ticket {
     private String fromStation, toStation;
     @XmlElement
     private String type;
-
+    @XmlElement
+    private Map<String, String> prefixes;
 
     @Override
     public String toString() {
@@ -36,6 +37,7 @@ public class Ticket {
                 ", fromStation='" + fromStation + '\'' +
                 ", toStation='" + toStation + '\'' +
                 ", type='" + type + '\'' +
+                ", prefixes=" + prefixes +
                 '}';
     }
 
@@ -118,5 +120,13 @@ public class Ticket {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Map<String, String> getPrefixes() {
+        return prefixes;
+    }
+
+    public void setPrefixes(Map<String, String> prefixes) {
+        this.prefixes = prefixes;
     }
 }
