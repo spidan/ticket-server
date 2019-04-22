@@ -75,16 +75,48 @@ public class Utils {
     }
 
     public static Ticket getTicketFromDB(Ticket ticket, TicketRepo ticketRepo) {
+        String name = ticketRepo.getObject("sm", "offer1", "gr", "name");
+        name = convertFromWithUrlToWithoutUrl("gr", name);
+        ticket.setName(name);
 
-        ticket.setName(ticketRepo.getObject("sm", "offer1", "gr", "name"));
-        ticket.setBegin(ticketRepo.getObject("sm", "offer1", "gr", "validFrom"));
-        ticket.setEnd(ticketRepo.getObject("sm", "offer1", "gr", "validThrough"));
-        ticket.setIncludes(ticketRepo.getObject("sm", "offer1", "gr", "includes"));
-        ticket.setAccessedBus(ticketRepo.getObject("sm", ticket.getIncludes(), "tio", "accessTo"));
-        ticket.setFromStation(ticketRepo.getObject("sm", ticket.getAccessedBus(), "tio", "from"));
-        ticket.setToStation(ticketRepo.getObject("sm", ticket.getAccessedBus(), "tio", "to"));
-        ticket.setType(ticketRepo.getType("sm", ticket.getIncludes(), "tio"));
+        String begin = ticketRepo.getObject("sm", "offer1", "gr", "validFrom");
+        begin = convertFromWithUrlToWithoutUrl("gr", begin);
+        ticket.setBegin(begin);
+
+        String end = ticketRepo.getObject("sm", "offer1", "gr", "validThrough");
+        end = convertFromWithUrlToWithoutUrl("gr", end);
+        ticket.setEnd(end);
+
+        String includes = ticketRepo.getObject("sm", "offer1", "gr", "includes");
+        includes = convertFromWithUrlToWithoutUrl("gr", includes);
+        ticket.setIncludes(includes);
+        includes = includes.substring(includes.indexOf(":") + 1);
+
+        String accessedBus = ticketRepo.getObject("sm", includes, "tio", "accessTo");
+        accessedBus = convertFromWithUrlToWithoutUrl("tio", accessedBus);
+        ticket.setAccessedBus(accessedBus);
+        accessedBus = accessedBus.substring(accessedBus.indexOf(":") + 1);
+
+        String fromStation = ticketRepo.getObject("sm", accessedBus, "tio", "from");
+        fromStation = convertFromWithUrlToWithoutUrl("tio", fromStation);
+        ticket.setFromStation(fromStation);
+
+        String toStation = ticketRepo.getObject("sm", accessedBus, "tio", "to");
+        toStation = convertFromWithUrlToWithoutUrl("tio", toStation);
+        ticket.setToStation(toStation);
+
+        String type = ticketRepo.getType("sm", includes, "tio");
+        type = convertFromWithUrlToWithoutUrl("tio", type);
+        ticket.setType(type);
+
         return ticket;
+    }
+
+    public static String convertFromWithUrlToWithoutUrl(String prefix, String value) {
+        if (value.contains("#")) {
+            return prefix + ":" + value.substring(value.indexOf("#") + 1);
+        }
+        return prefix + ":" + value;
     }
 
     public static String convertObjectToJson(Object object) {
