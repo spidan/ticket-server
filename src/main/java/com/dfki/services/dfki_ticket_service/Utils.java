@@ -162,7 +162,7 @@ public class Utils {
         System.out.println("POST Response Code :  " + responseCode);
 
         System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
-        if (responseCode == HttpURLConnection.HTTP_ACCEPTED) { //success
+        if (responseCode == HttpURLConnection.HTTP_CREATED) { //success
 
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     urlConnection.getInputStream()));
