@@ -1,10 +1,13 @@
 package com.dfki.services.netex_vdv_ticket_service;
 
 import com.dfki.services.netex_vdv_ticket_service.models.Ticket;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -73,6 +76,18 @@ public class Utils {
         }
 
         return xmlResult;
+    }
+
+    public static boolean isValidXml(String xml) {
+        try {
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            saxParser.parse(inputStream, new DefaultHandler());
+            return true;
+        } catch (Exception e) {
+//            e.printStackTrace();
+            return false;
+        }
     }
 
 }

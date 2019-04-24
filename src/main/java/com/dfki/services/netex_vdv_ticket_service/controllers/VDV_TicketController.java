@@ -18,7 +18,7 @@ public class VDV_TicketController {
     private TicketService ticketService;
 
     @PostMapping(value = "vdv/ticket", consumes = "application/xml")
-    public ResponseEntity<?> savedTicket(@RequestBody Ticket ticket) {
+    public ResponseEntity<?> saveTicket(@RequestBody Ticket  ticket) {
         try {
             ticketService.postToDFKITicketService(ticket);
         } catch (IOException e) {
