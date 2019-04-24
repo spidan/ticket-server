@@ -18,16 +18,13 @@ public class VDV_TicketController {
     private TicketService ticketService;
 
     @PostMapping(value = "vdv/ticket", consumes = "application/xml")
-    public ResponseEntity<?> savedTicket(@RequestBody String xmlInput) {
-//        ticketService = new TicketService();
+    public ResponseEntity<?> savedTicket(@RequestBody Ticket ticket) {
         try {
-            ticketService.postToDFKITicketService(xmlInput);
+            ticketService.postToDFKITicketService(ticket);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Ticket ticket = ticketService.xmlToTicket(xmlInput);
-
-        return new ResponseEntity<>("Accepted XML Input is \n" + xmlInput, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Accepted XML Input is \n" /*+ xmlInput*/, HttpStatus.CREATED);
     }
 
 }
