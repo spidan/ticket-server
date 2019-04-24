@@ -4,18 +4,15 @@ import com.dfki.services.netex_vdv_ticket_service.models.Ticket;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 public class Utils {
 
-    public static void sendXMLPostRequest(String link, String xmlData) {
-        try {
-
+    public static void sendXMLPostRequest(String link, String xmlData) throws IOException {
             URL url = new URL(link);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
@@ -45,9 +42,6 @@ public class Utils {
             } else {
                 System.out.println("POST NOT WORKED");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static Ticket convertXmlToTicket(String xml) {
