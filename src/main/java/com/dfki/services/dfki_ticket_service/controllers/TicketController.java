@@ -3,6 +3,7 @@ package com.dfki.services.dfki_ticket_service.controllers;
 import com.dfki.services.dfki_ticket_service.Utils;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
+import com.dfki.services.dfki_ticket_service.services.TicketService;
 import org.eclipse.rdf4j.model.Model;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,26 +14,19 @@ import java.util.Map;
 
 @RestController("TicketController")
 public class TicketController {
-    private TicketRepo ticketRepo;
+    private TicketService ticketService;
 
     @PostMapping(value = "ticket/in_rdf", consumes = "text/turtle")
     public ResponseEntity<?> saveTicket(@RequestBody String rdfInput) {
         try {
-            ticketRepo = new TicketRepo();
-            Model model = Utils.turtleToRDFConverter(rdfInput);
-            Map<String, String> prefixes = Utils.parsePrefixes(rdfInput);
-            ticketRepo.save(model);
-            Ticket ticket = Utils.getTicketFromDB(new Ticket(), ticketRepo);
-            ticket.setPrefixes(prefixes);
-            String jsonResult = Utils.convertObjectToJson(ticket);
+            ticketService = new TicketService();
+            Ticket ticket = ticketService.save(rdfInput);
 
-            String xmlResult = Utils.convertObjectToXML(ticket);
+            String ticketJson = ticketService.toJson(ticket);
 
-            // Link for the VDV ticket Service
-            String vdv_ticket_service_url = "http://localhost:8802/vdv/ticket";
+            ticketService.postToVdvService(ticket);
 
-            Utils.sendXMLPostRequest(vdv_ticket_service_url, xmlResult);
-            return new ResponseEntity<>(jsonResult, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(ticketJson, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,6 +37,7 @@ public class TicketController {
 
     @PostMapping(value = "ticket/in_xml", consumes = "application/xml")
     public static ResponseEntity<?> saveTicket_XMLFormat(@RequestBody String xmlInput) {
+
         System.out.println(xmlInput);
         return new ResponseEntity<>(xmlInput, HttpStatus.ACCEPTED);
 

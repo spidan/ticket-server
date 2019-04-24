@@ -26,6 +26,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -130,8 +132,6 @@ public class Utils {
     public static String convertObjectToXML(Object object) {
         String xmlResult = null;
         try {
-
-
             JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -146,40 +146,35 @@ public class Utils {
         return xmlResult;
     }
 
-    public static void sendXMLPostRequest(String link, String xmlData) {
-        try {
+    public static void sendXMLPostRequest(String link, String xmlData) throws IOException {
+        URL url = new URL(link);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty("Content-Type", "application/xml");
 
-            URL url = new URL(link);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Type", "application/xml");
+        urlConnection.setDoOutput(true);
+        OutputStream outputStream = urlConnection.getOutputStream();
+        outputStream.write(xmlData.getBytes());
+        outputStream.flush();
+        outputStream.close();
 
-            urlConnection.setDoOutput(true);
-            OutputStream outputStream = urlConnection.getOutputStream();
-            outputStream.write(xmlData.getBytes());
-            outputStream.flush();
-            outputStream.close();
+        int responseCode = urlConnection.getResponseCode();
+        System.out.println("POST Response Code :  " + responseCode);
 
-            int responseCode = urlConnection.getResponseCode();
-            System.out.println("POST Response Code :  " + responseCode);
+        System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
+        if (responseCode == HttpURLConnection.HTTP_ACCEPTED) { //success
 
-            System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
-            if (responseCode == HttpURLConnection.HTTP_ACCEPTED) { //success
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-                System.out.println(response.toString());
-            } else {
-                System.out.println("POST NOT WORKED");
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    urlConnection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            in.close();
+            System.out.println(response.toString());
+        } else {
+            System.out.println("POST NOT WORKED");
         }
     }
 

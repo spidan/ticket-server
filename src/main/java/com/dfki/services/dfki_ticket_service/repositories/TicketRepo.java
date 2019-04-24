@@ -20,14 +20,16 @@ public class TicketRepo {
         this.repository.init();
     }
 
-    public void save(Model model) {
+    public boolean save(Model model) {
         try (RepositoryConnection connection = repository.getConnection()) {
 
             connection.begin();
             connection.add(model);
             connection.commit();
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return false;
         }
     }
 
