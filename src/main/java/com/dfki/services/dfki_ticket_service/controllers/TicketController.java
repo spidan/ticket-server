@@ -5,6 +5,7 @@ import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import com.dfki.services.dfki_ticket_service.services.TicketService;
 import org.eclipse.rdf4j.model.Model;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,12 @@ import java.util.Map;
 
 @RestController("TicketController")
 public class TicketController {
+    @Autowired
     private TicketService ticketService;
 
     @PostMapping(value = "ticket/in_rdf", consumes = "text/turtle")
     public ResponseEntity<?> saveTicket(@RequestBody String rdfInput) {
         try {
-            ticketService = new TicketService();
             Ticket ticket = ticketService.save(rdfInput);
 
             String ticketJson = ticketService.toJson(ticket);

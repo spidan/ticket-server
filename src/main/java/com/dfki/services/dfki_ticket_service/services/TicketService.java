@@ -4,10 +4,12 @@ import com.dfki.services.dfki_ticket_service.Utils;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import org.eclipse.rdf4j.model.Model;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Map;
 
+@Component
 public class TicketService {
     private TicketRepo ticketRepo;
     private final static String vdv_ticket_service_url = "http://localhost:8802/vdv/ticket";
