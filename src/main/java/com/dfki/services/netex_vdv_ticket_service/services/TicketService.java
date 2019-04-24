@@ -2,9 +2,10 @@ package com.dfki.services.netex_vdv_ticket_service.services;
 
 import com.dfki.services.netex_vdv_ticket_service.Utils;
 import com.dfki.services.netex_vdv_ticket_service.models.Ticket;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
+@Component
 public class TicketService {
     private static final String dfki_service_url = "http://localhost:8800/ticket/in_xml";
 
