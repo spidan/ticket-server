@@ -27,7 +27,7 @@ public class TicketController {
 
             ticketService.postToVdvService(ticket);
 
-            return new ResponseEntity<>(ticketJson, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(ticketJson, HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,9 +38,11 @@ public class TicketController {
 
     @PostMapping(value = "ticket/in_xml", consumes = "application/xml")
     public static ResponseEntity<?> saveTicket_XMLFormat(@RequestBody String xmlInput) {
-
+        if (!Utils.isValidXml(xmlInput)) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
         System.out.println(xmlInput);
-        return new ResponseEntity<>(xmlInput, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(xmlInput, HttpStatus.OK);
 
     }
 //    @GetMapping("get/allTickets")
