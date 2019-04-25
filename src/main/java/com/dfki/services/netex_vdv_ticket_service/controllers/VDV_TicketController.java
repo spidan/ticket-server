@@ -1,12 +1,12 @@
 package com.dfki.services.netex_vdv_ticket_service.controllers;
 
-import com.dfki.services.netex_vdv_ticket_service.models.Ticket;
+import com.dfki.services.netex_vdv_ticket_service.Utils;
 import com.dfki.services.netex_vdv_ticket_service.services.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -14,17 +14,23 @@ import java.io.IOException;
 
 @RestController()
 public class VDV_TicketController {
-    @Autowired
+    //    @Autowired
     private TicketService ticketService;
 
+    @RequestMapping
     @PostMapping(value = "vdv/ticket", consumes = "application/xml")
-    public ResponseEntity<?> saveTicket(@RequestBody Ticket  ticket) {
+    public ResponseEntity<?> saveTicket(@RequestBody String ticket) {
+        if (!Utils.isValidXml(ticket)) {
+            return new ResponseEntity<>("Xml is not valid!!!", HttpStatus.NOT_ACCEPTABLE);
+        }
+        ticketService = new TicketService();
         try {
-            ticketService.postToDFKITicketService(ticket);
+            ticketService.postToDFKITicketService(ticketService.xmlToTicket(ticket));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>("Accepted XML Input is \n" /*+ xmlInput*/, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
