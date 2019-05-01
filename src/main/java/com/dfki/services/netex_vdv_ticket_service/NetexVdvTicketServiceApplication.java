@@ -8,6 +8,7 @@ public class NetexVdvTicketServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NetexVdvTicketServiceApplication.class, args);
+        System.out.println("PROJECT READY!!!");
     }
 
 }
