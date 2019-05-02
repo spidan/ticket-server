@@ -1,6 +1,6 @@
-package com.dfki.services.netex_vdv_ticket_service.tests;
+package com.dfki.services.netex_vdv_ticket_service;
 
-import com.dfki.services.netex_vdv_ticket_service.Utils;
+import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,7 @@ public class UtilTests {
         try {
             Assert.assertEquals(HttpStatus.OK.value(), Utils.sendXMLPostRequest(validURI, validXml));
             Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE.value(), Utils.sendXMLPostRequest(validURI, randomXml));
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

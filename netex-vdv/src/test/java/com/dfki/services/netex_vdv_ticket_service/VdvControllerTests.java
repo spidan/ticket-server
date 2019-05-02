@@ -1,6 +1,6 @@
-package com.dfki.services.netex_vdv_ticket_service.tests;
+package com.dfki.services.netex_vdv_ticket_service;
 
-import com.dfki.services.netex_vdv_ticket_service.controllers.VDV_TicketController;
+import com.dfki.services.netex_vdv_ticket_service.controllers.VDVTicketController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +17,7 @@ public class VdvControllerTests {
     private MockMvc mockMvc;
 
     @InjectMocks
-    private VDV_TicketController vdv_ticketController;
+    private VDVTicketController vdv_ticketController;
     private String invalidXmlSample = "This is invalid Xml";
     private String validXmlSample = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ticket>\n" +
