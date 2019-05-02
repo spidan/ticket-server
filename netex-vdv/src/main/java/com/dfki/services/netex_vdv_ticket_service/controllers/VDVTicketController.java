@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController()
-public class VDV_TicketController {
+public class VDVTicketController {
 
 	private TicketService ticketService;
 
 	@RequestMapping
 	@PostMapping(value = "vdv/ticket", consumes = "application/xml")
-	public ResponseEntity<?> saveTicket(@RequestBody String ticket) {
+	public ResponseEntity<?> saveTicket(@RequestBody final String ticket) {
 		if (!Utils.isValidXml(ticket)) {
 			return new ResponseEntity<>("Xml is not valid!!!", HttpStatus.NOT_ACCEPTABLE);
 		}
