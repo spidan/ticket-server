@@ -4,8 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class NetexVdvTicketServiceApplication {
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(NetexVdvTicketServiceApplication.class, args);
 		System.out.println("PROJECT READY!!!");
 	}
