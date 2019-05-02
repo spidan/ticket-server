@@ -30,13 +30,9 @@ public class UtilTests {
         String randomXml = Utils.getRandomString(70);
         try {
             Assert.assertEquals(HttpStatus.OK.value(), Utils.sendXMLPostRequest(validURI, validXml));
-
             Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE.value(), Utils.sendXMLPostRequest(validURI, randomXml));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }
