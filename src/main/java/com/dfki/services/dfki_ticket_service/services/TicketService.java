@@ -12,7 +12,11 @@ import java.util.Map;
 @Component
 public class TicketService {
     private TicketRepo ticketRepo;
-    private final static String vdv_ticket_service_url = "http://localhost:8802/vdv/ticket";
+    private final static String[] VDV_SERVICE_URIs = {"http://localhost:8802/vdv/ticket",
+            "http://192.168.99.100:8802/vdv/ticket"};
+    public final static String VDV_SERVICE_URI = VDV_SERVICE_URIs[0];
+//    private final static String vdv_ticket_service_url_localhost = "http://localhost:8802/vdv/ticket";
+//    private final static String vdv_ticket_service_url_docker = "http://192.168.99.100:8802/vdv/ticket";
 
     public TicketService() {
         ticketRepo = new TicketRepo();
@@ -39,6 +43,6 @@ public class TicketService {
 
     public void postToVdvService(Ticket ticket) throws IOException {
 
-        Utils.sendXMLPostRequest(vdv_ticket_service_url, toXml(ticket));
+        Utils.sendXMLPostRequest(VDV_SERVICE_URI, toXml(ticket));
     }
 }

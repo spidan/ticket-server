@@ -4,23 +4,10 @@ import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.HttpStatus;
 import org.eclipse.rdf4j.model.*;
-import org.eclipse.rdf4j.query.algebra.Str;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.bind.JAXBContext;
@@ -29,13 +16,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Utils {
@@ -165,7 +148,7 @@ public class Utils {
         System.out.println("POST Response Code :  " + responseCode);
 
         System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
-        if (responseCode == HttpURLConnection.HTTP_CREATED) { //success
+        if (responseCode == HttpStatus.SC_OK) { //success
 
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     urlConnection.getInputStream()));
@@ -196,6 +179,7 @@ public class Utils {
         }
         return prefixes;
     }
+
     public static boolean isValidXml(String xml) {
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();

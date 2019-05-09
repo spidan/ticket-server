@@ -8,7 +8,7 @@ public class DfkiTicketServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DfkiTicketServiceApplication.class, args);
-        System.out.println("PROJECT Works!!!!!!!!!!!!!!!!");
+        System.out.println("PROJECT Works!!!");
     }
 
 }
