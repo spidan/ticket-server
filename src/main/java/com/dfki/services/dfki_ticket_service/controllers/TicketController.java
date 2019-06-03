@@ -5,10 +5,14 @@ import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.ws.rs.Consumes;
+import java.io.IOException;
 
 
 @RestController("TicketController")
@@ -17,7 +21,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping(value = "ticket/in_rdf", consumes = "text/turtle")
-    public ResponseEntity<?> saveTicket(@RequestBody String rdfInput) {
+    public ResponseEntity<?> saveTicketRdf(@RequestBody String rdfInput) {
         try {
             Ticket ticket = ticketService.save(rdfInput);
 
@@ -34,14 +38,34 @@ public class TicketController {
     }
 
 
-    @PostMapping(value = "ticket/in_xml", consumes = "application/xml")
-    public static ResponseEntity<?> saveTicket_XMLFormat(@RequestBody String xmlInput) {
-        if (!Utils.isValidXml(xmlInput)) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-        System.out.println(xmlInput);
-        return new ResponseEntity<>(xmlInput, HttpStatus.OK);
+    @PostMapping(value = "ticket/in_xml", consumes = {"application/xml", "application/json"})
+    public ResponseEntity<?> saveTicket(@RequestBody String input) {
+        String result = "null";
+        if (Utils.isXmlValid(input)) {
+            try {
+                result = ticketService.xmlToRdf(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(input);
+            System.out.println("Above Xml is converted into below RDF:");
+            System.out.println(result);
 
+        } else if (Utils.isJsonValid(input)) {
+            try {
+                result = ticketService.jsonToRdf(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(input);
+            System.out.println("Above Json is converted into below RDF:");
+            System.out.println(result);
+        } else {
+            return new ResponseEntity<>("The input is not valid!!!",HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
