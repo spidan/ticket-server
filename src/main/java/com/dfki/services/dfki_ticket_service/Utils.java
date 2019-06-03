@@ -1,5 +1,10 @@
 package com.dfki.services.dfki_ticket_service;
 
+import be.ugent.rml.DataFetcher;
+import be.ugent.rml.Executor;
+import be.ugent.rml.records.RecordsFactory;
+import be.ugent.rml.store.QuadStore;
+import be.ugent.rml.store.RDF4JStore;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,6 +13,9 @@ import org.apache.http.HttpStatus;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.bind.JAXBContext;
@@ -17,9 +25,15 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.*;
 
 public class Utils {
 
@@ -180,7 +194,7 @@ public class Utils {
         return prefixes;
     }
 
-    public static boolean isValidXml(String xml) {
+    public static boolean isXmlValid(String xml) {
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
@@ -190,6 +204,49 @@ public class Utils {
 //            e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean isJsonValid(String json) {
+        try {
+            new JSONObject(json);
+        } catch (JSONException ex) {
+            try {
+                new JSONArray(json);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void writeTextToFile(String fileName, String text) {
+        try {
+            Path file = Paths.get(fileName);
+            Files.write(file, Collections.singleton(text), Charset.forName("UTF-8"));
+
+//            Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
+//            FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
+//            Files.setPosixFilePermissions(file,ownerWritable);
+
+//            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName));
+//            bufferedWriter.write(text);
+//            bufferedWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static QuadStore mapToRDF(String mappingFile) throws IOException {
+        String cwd = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources"; //path to default directory for local files
+        mappingFile = cwd + "/" + mappingFile;
+        InputStream mappingStream = new FileInputStream(mappingFile);
+        Model model = Rio.parse(mappingStream, "", RDFFormat.TURTLE);
+        RDF4JStore rmlStore = new RDF4JStore(model);
+        Executor executor = new Executor(rmlStore, new RecordsFactory(new DataFetcher(cwd, rmlStore)));
+        QuadStore result = executor.execute(null, true);
+
+
+        return result;
     }
 
 }
