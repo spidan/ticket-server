@@ -1,5 +1,6 @@
 package com.dfki.services.dfki_ticket_service.services;
 
+import be.ugent.rml.store.QuadStore;
 import com.dfki.services.dfki_ticket_service.Utils;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
@@ -44,5 +45,21 @@ public class TicketService {
     public void postToVdvService(Ticket ticket) throws IOException {
 
         Utils.sendXMLPostRequest(VDV_SERVICE_URI, toXml(ticket));
+    }
+
+    public String xmlToRdf(String xmlString) throws IOException {
+        String mappingFile = "xml_mapping.ttl";
+        String fileName = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources/xml_text.xml";
+        Utils.writeTextToFile(fileName, xmlString);
+        QuadStore result = Utils.mapToRDF(mappingFile);
+        return result.toString();
+    }
+
+    public String jsonToRdf(String jsonString) throws IOException {
+        String mappingFile = "json_mapping.ttl";
+        String fileName = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources/json_text.json";
+        Utils.writeTextToFile(fileName, jsonString);
+        QuadStore result = Utils.mapToRDF(mappingFile);
+        return result.toString();
     }
 }
