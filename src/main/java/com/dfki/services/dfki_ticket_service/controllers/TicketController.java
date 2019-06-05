@@ -46,6 +46,8 @@ public class TicketController {
                 result = ticketService.xmlToRdf(input);
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             System.out.println(input);
             System.out.println("Above Xml is converted into below RDF:");
@@ -55,6 +57,8 @@ public class TicketController {
             try {
                 result = ticketService.jsonToRdf(input);
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             System.out.println(input);
