@@ -1,6 +1,6 @@
 /smartticket/target/
+/dfki-ticket-service/target/
 HELP.md
-/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -29,3 +29,4 @@ HELP.md
 ### VS Code ###
 .vscode/
 /netex-vdv/target/
+
