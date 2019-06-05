@@ -1,5 +1,6 @@
 /smartticket/target/
 /dfki-ticket-service/target/
+/rmlmapper-java/
 HELP.md
 !.mvn/wrapper/maven-wrapper.jar
 
