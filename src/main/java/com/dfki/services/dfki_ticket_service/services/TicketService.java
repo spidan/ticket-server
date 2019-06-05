@@ -5,6 +5,7 @@ import com.dfki.services.dfki_ticket_service.Utils;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.query.algebra.Str;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -47,19 +48,19 @@ public class TicketService {
         Utils.sendXMLPostRequest(VDV_SERVICE_URI, toXml(ticket));
     }
 
-    public String xmlToRdf(String xmlString) throws IOException {
+    public String xmlToRdf(String xmlString) throws Exception {
         String mappingFile = "xml_mapping.ttl";
         String fileName = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources/xml_text.xml";
         Utils.writeTextToFile(fileName, xmlString);
-        QuadStore result = Utils.mapToRDF(mappingFile);
-        return result.toString();
+        String result = Utils.mapToRDF(mappingFile);
+        return result;
     }
 
-    public String jsonToRdf(String jsonString) throws IOException {
+    public String jsonToRdf(String jsonString) throws Exception {
         String mappingFile = "json_mapping.ttl";
         String fileName = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources/json_text.json";
         Utils.writeTextToFile(fileName, jsonString);
-        QuadStore result = Utils.mapToRDF(mappingFile);
-        return result.toString();
+        String result = Utils.mapToRDF(mappingFile);
+        return result;
     }
 }
