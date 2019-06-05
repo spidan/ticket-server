@@ -1,0 +1,3 @@
+[submodule "rmlmapper-java"]
+	path = rmlmapper-java
+	url = https://github.com/RMLio/rmlmapper-java.git
