@@ -2,6 +2,7 @@ package com.dfki.services.dfki_ticket_service;
 
 import be.ugent.rml.DataFetcher;
 import be.ugent.rml.Executor;
+import be.ugent.rml.functions.FunctionLoader;
 import be.ugent.rml.records.RecordsFactory;
 import be.ugent.rml.store.QuadStore;
 import be.ugent.rml.store.RDF4JStore;
@@ -236,17 +237,36 @@ public class Utils {
         }
     }
 
-    public static QuadStore mapToRDF(String mappingFile) throws IOException {
-        String cwd = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources"; //path to default directory for local files
+    public static String mapToRDF(String mappingFile) throws Exception {
+
+        String cwd = "C:/Workspaces/RML_Mapper_Lib_Check_Project/src/main/resources"; //path to default directory for local files
         mappingFile = cwd + "/" + mappingFile;
+        String outputFilePath = cwd + "/output.ttl";
+
         InputStream mappingStream = new FileInputStream(mappingFile);
         Model model = Rio.parse(mappingStream, "", RDFFormat.TURTLE);
         RDF4JStore rmlStore = new RDF4JStore(model);
-        Executor executor = new Executor(rmlStore, new RecordsFactory(new DataFetcher(cwd, rmlStore)));
-        QuadStore result = executor.execute(null, true);
 
+        FunctionLoader functionLoader = new FunctionLoader(null, null, new HashMap<>());
 
-        return result;
+        RDF4JStore outputStore = new RDF4JStore();
+
+        Executor executor = new Executor(rmlStore, new RecordsFactory(new DataFetcher(cwd, rmlStore)), functionLoader, outputStore, be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
+
+        QuadStore result = executor.execute(executor.getTriplesMaps());
+        result.removeDuplicates();
+        result.setNamespaces(rmlStore.getNamespaces());
+
+        File outputFile = new File(outputFilePath);
+        FileWriter fileWriter = new FileWriter(outputFile, false);
+        result.write(fileWriter, "turtle");
+        fileWriter.close();
+
+        Path outputPath = Paths.get(outputFilePath);
+        byte[] encoded = Files.readAllBytes(outputPath);
+        String resultString = new String(encoded, Charset.defaultCharset());
+
+        return resultString;
     }
 
 }
