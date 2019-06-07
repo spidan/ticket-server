@@ -40,8 +40,7 @@ public class Utils {
 
     public static Model turtleToRDFConverter(String input) throws IOException {
         InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-        Model model = null;
-        model = Rio.parse(inputStream, "", RDFFormat.TURTLE);
+        Model model = Rio.parse(inputStream, "", RDFFormat.TURTLE);
 
         return model;
     }
@@ -147,6 +146,42 @@ public class Utils {
         return xmlResult;
     }
 
+    public static String sendPostRequest(String link, String data, String contentType) throws IOException {
+        URL url = new URL(link);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("POST");
+
+        urlConnection.setRequestProperty("Content-Type", contentType);
+
+        urlConnection.setDoOutput(true);
+
+        OutputStream outputStream = urlConnection.getOutputStream();
+        outputStream.write(data.getBytes());
+        outputStream.flush();
+        outputStream.close();
+
+        int responseCode = urlConnection.getResponseCode();
+        System.out.println("POST Response Code :  " + responseCode);
+
+        System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
+        StringBuffer response = null;
+        if (responseCode == org.springframework.http.HttpStatus.OK.value()) { //success
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    urlConnection.getInputStream()));
+            String inputLine;
+            response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            System.out.println(response.toString());
+        } else {
+            System.out.println("POST NOT WORKED");
+        }
+        return response.toString();
+    }
+
     public static void sendXMLPostRequest(String link, String xmlData) throws IOException {
         URL url = new URL(link);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -195,19 +230,20 @@ public class Utils {
         return prefixes;
     }
 
-    public static boolean isXmlValid(String xml) {
+    public static boolean isValidXml(String xml) {
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
             saxParser.parse(inputStream, new DefaultHandler());
-            return true;
         } catch (Exception e) {
 //            e.printStackTrace();
             return false;
         }
+        return true;
+
     }
 
-    public static boolean isJsonValid(String json) {
+    public static boolean isValidJson(String json) {
         try {
             new JSONObject(json);
         } catch (JSONException ex) {
