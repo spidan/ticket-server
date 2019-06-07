@@ -1,13 +1,11 @@
 package com.dfki.services.dfki_ticket_service.services;
 
-import be.ugent.rml.store.QuadStore;
 import com.dfki.services.dfki_ticket_service.Utils;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.query.algebra.Str;
 import org.springframework.stereotype.Component;
-
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Map;
 
@@ -45,7 +43,8 @@ public class TicketService {
 
     public void postToVdvService(Ticket ticket) throws IOException {
 
-        Utils.sendXMLPostRequest(VDV_SERVICE_URI, toXml(ticket));
+//        Utils.sendXMLPostRequest(VDV_SERVICE_URI, toXml(ticket));
+        Utils.sendPostRequest(VDV_SERVICE_URI, toXml(ticket), MediaType.APPLICATION_XML);
     }
 
     public String xmlToRdf(String xmlString) throws Exception {
