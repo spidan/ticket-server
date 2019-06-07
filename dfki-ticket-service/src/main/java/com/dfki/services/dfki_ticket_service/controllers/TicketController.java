@@ -20,7 +20,7 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping(value = "ticket/in_rdf", consumes = "text/turtle")
+    @PostMapping(value = "dfki/ticket/service/ticket", consumes = "text/turtle")
     public ResponseEntity<?> saveTicketRdf(@RequestBody String rdfInput) {
         try {
             Ticket ticket = ticketService.save(rdfInput);
@@ -37,39 +37,45 @@ public class TicketController {
         }
     }
 
-
-    @PostMapping(value = "ticket/in_xml", consumes = {"application/xml", "application/json"})
+    @PostMapping(value = "dfki/ticket/service/ticket", consumes = {"application/xml", "application/json"})
     public ResponseEntity<?> saveTicket(@RequestBody String input) {
+        System.out.println("------------saveTicket-------------");
+        System.out.println(input);
+        System.out.println("------------saveTicket-------------");
         String result = "null";
-        if (Utils.isXmlValid(input)) {
+        if (Utils.isValidXml(input)) {
             try {
                 result = ticketService.xmlToRdf(input);
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            System.out.println("---------------------");
             System.out.println(input);
             System.out.println("Above Xml is converted into below RDF:");
             System.out.println(result);
+            System.out.println("---------------------");
 
-        } else if (Utils.isJsonValid(input)) {
+        } else if (Utils.isValidJson(input)) {
             try {
                 result = ticketService.jsonToRdf(input);
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            System.out.println("---------------------");
             System.out.println(input);
             System.out.println("Above Json is converted into below RDF:");
             System.out.println(result);
-        } else {
-            return new ResponseEntity<>("The input is not valid!!!",HttpStatus.NOT_ACCEPTABLE);
-        }
+            System.out.println("---------------------");
 
+        } else {
+            return new ResponseEntity<>("The input is not valid!!!", HttpStatus.NOT_ACCEPTABLE);
+        }
+        try {
+            String response = Utils.sendPostRequest("http://localhost:8090/ticket", result, "text/turtle");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
 }
