@@ -41,15 +41,14 @@ public class TicketService {
         return Utils.convertObjectToXML(ticket);
     }
 
-    public void postToVdvService(Ticket ticket) throws IOException {
+    public void postToVdvService(Ticket ticket) throws Exception {
 
-//        Utils.sendXMLPostRequest(VDV_SERVICE_URI, toXml(ticket));
-        Utils.sendPostRequest(VDV_SERVICE_URI, toXml(ticket), MediaType.APPLICATION_XML);
+        Utils.sendPostRequest(VDV_SERVICE_URI, toXml(ticket), new String[]{MediaType.APPLICATION_XML});
     }
 
     public String xmlToRdf(String xmlString) throws Exception {
         String mappingFile = "xml_mapping.ttl";
-        String fileName = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources/xml_text.xml";
+        String fileName = "xml_text.xml";
         Utils.writeTextToFile(fileName, xmlString);
         String result = Utils.mapToRDF(mappingFile);
         return result;
@@ -57,7 +56,7 @@ public class TicketService {
 
     public String jsonToRdf(String jsonString) throws Exception {
         String mappingFile = "json_mapping.ttl";
-        String fileName = "C:/Workspaces/DFKI_Ticket_Service/src/main/resources/json_text.json";
+        String fileName = "json_text.json";
         Utils.writeTextToFile(fileName, jsonString);
         String result = Utils.mapToRDF(mappingFile);
         return result;
