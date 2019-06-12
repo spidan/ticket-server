@@ -39,43 +39,31 @@ public class TicketController {
 
     @PostMapping(value = "dfki/ticket/service/ticket", consumes = {"application/xml", "application/json"})
     public ResponseEntity<?> saveTicket(@RequestBody String input) {
-        System.out.println("------------saveTicket-------------");
-        System.out.println(input);
-        System.out.println("------------saveTicket-------------");
-        String result = "null";
-        if (Utils.isValidXml(input)) {
-            try {
-                result = ticketService.xmlToRdf(input);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println("---------------------");
-            System.out.println(input);
-            System.out.println("Above Xml is converted into below RDF:");
-            System.out.println(result);
-            System.out.println("---------------------");
-
-        } else if (Utils.isValidJson(input)) {
-            try {
-                result = ticketService.jsonToRdf(input);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println("---------------------");
-            System.out.println(input);
-            System.out.println("Above Json is converted into below RDF:");
-            System.out.println(result);
-            System.out.println("---------------------");
-
-        } else {
-            return new ResponseEntity<>("The input is not valid!!!", HttpStatus.NOT_ACCEPTABLE);
-        }
+        String result = "";
         try {
-            String response = Utils.sendPostRequest("http://localhost:8090/ticket", result, "text/turtle");
-        } catch (IOException e) {
+            if (Utils.isValidXml(input)) {
+                result = ticketService.xmlToRdf(input);
+            } else if (Utils.isValidJson(input)) {
+                result = ticketService.jsonToRdf(input);
+            } else {
+                return new ResponseEntity<>("The input is neither JSON nor XML!!!", HttpStatus.NOT_ACCEPTABLE);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>("Mapping process failed. Most likely, mapping file is " +
+                    "not proper for the input.\n" + e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
-
+        if (result.equals("")) {
+            return new ResponseEntity<>("Mapping process failed. Most likely, mapping file is " +
+                    "not proper for the input.\n", HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            try {
+                result = Utils.sendPostRequest("http://localhost:8090/ticket", result, new String[]{"text/turtle"});
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
