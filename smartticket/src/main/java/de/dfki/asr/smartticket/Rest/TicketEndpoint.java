@@ -25,9 +25,6 @@ public class TicketEndpoint {
             consumes = "text/turtle")
     @ResponseBody
     public String receiveTicket(@RequestBody final Model model) {
-        System.out.println("------------receiveTicket----------------");
-        System.out.println(model.toString());
-        System.out.println("--------------receiveTicket--------------");
         BookingProcess booking = new BookingProcess();
         booking.writeRequestToRepo(model);
         TicketWrapper ticket = new TicketWrapper(booking.getRepo());
@@ -39,16 +36,17 @@ public class TicketEndpoint {
             consumes = {"application/xml", "application/json"})
     @ResponseBody
     public ResponseEntity<?> receiveXmlOrJsonTicket(@RequestBody final String input) {
-        System.out.println("------------receiveXmlOrJsonTicket----------------");
-        System.out.println(input);
-        System.out.println("--------------receiveXmlOrJsonTicket--------------");
+        String response = "";
         try {
-            Utils.sendPostRequest("http://localhost:8801/dfki/ticket/service/ticket", input, new String[]{"application/xml", "application/json"});
+            response = Utils.sendPostRequest("http://localhost:8801/dfki/ticket/service/ticket", input, new String[]{"application/xml", "application/json"});
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(SpringExceptionHandlers.handleIoException(e), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
