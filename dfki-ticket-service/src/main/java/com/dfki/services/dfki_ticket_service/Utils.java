@@ -11,6 +11,12 @@ import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
@@ -37,6 +43,9 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 
 public class Utils {
+    private static final String workingDirectory =
+            new File(Utils.class.getResource("/application.properties").getFile()).getParentFile().getAbsolutePath();
+
 
     public static Model turtleToRDFConverter(String input) throws IOException {
         InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
@@ -146,41 +155,30 @@ public class Utils {
         return xmlResult;
     }
 
-    public static String sendPostRequest(String link, String data, String contentType) throws IOException {
-        URL url = new URL(link);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("POST");
-
-        urlConnection.setRequestProperty("Content-Type", contentType);
-
-        urlConnection.setDoOutput(true);
-
-        OutputStream outputStream = urlConnection.getOutputStream();
-        outputStream.write(data.getBytes());
-        outputStream.flush();
-        outputStream.close();
-
-        int responseCode = urlConnection.getResponseCode();
-        System.out.println("POST Response Code :  " + responseCode);
-
-        System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
-        StringBuffer response = null;
-        if (responseCode == org.springframework.http.HttpStatus.OK.value()) { //success
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    urlConnection.getInputStream()));
-            String inputLine;
-            response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            System.out.println(response.toString());
-        } else {
-            System.out.println("POST NOT WORKED");
+    public static String sendPostRequest(String url, String data, String[] contentTypes) throws Exception {
+        CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+        StringEntity stringEntity = new StringEntity(data);
+        httpPost.setEntity(stringEntity);
+        for (String contentType : contentTypes) {
+            httpPost.setHeader("Accept", contentType);
+            httpPost.setHeader("Content-type", contentType);
         }
-        return response.toString();
+
+        CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+        int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
+        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), "UTF-8");
+        closeableHttpClient.close();
+        if (responseCode != 200) {
+            throw new Exception("Response code: " + responseCode + "\n" + responseString);
+        }
+        System.out.println("DFKI->Response code and string:");
+        System.out.println(responseCode);
+        System.out.println(responseString);
+
+        return responseString;
     }
+
 
     public static void sendXMLPostRequest(String link, String xmlData) throws IOException {
         URL url = new URL(link);
@@ -258,26 +256,19 @@ public class Utils {
 
     public static void writeTextToFile(String fileName, String text) {
         try {
-            Path file = Paths.get(fileName);
-            Files.write(file, Collections.singleton(text), Charset.forName("UTF-8"));
+            File file = new File(workingDirectory + "/" + fileName);
 
-//            Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
-//            FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
-//            Files.setPosixFilePermissions(file,ownerWritable);
+            Path path = Paths.get(file.getPath());
+            Files.write(path, Collections.singleton(text), Charset.forName("UTF-8"));
 
-//            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName));
-//            bufferedWriter.write(text);
-//            bufferedWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static String mapToRDF(String mappingFile) throws Exception {
-
-        String cwd = "C:/Workspaces/RML_Mapper_Lib_Check_Project/src/main/resources"; //path to default directory for local files
-        mappingFile = cwd + "/" + mappingFile;
-        String outputFilePath = cwd + "/output.ttl";
+    public static String mapToRDF(String mappingFileName) throws Exception {
+        String outputFilePath = workingDirectory + "/output.ttl";
+        String mappingFile = workingDirectory + "/" + mappingFileName;
 
         InputStream mappingStream = new FileInputStream(mappingFile);
         Model model = Rio.parse(mappingStream, "", RDFFormat.TURTLE);
@@ -287,7 +278,7 @@ public class Utils {
 
         RDF4JStore outputStore = new RDF4JStore();
 
-        Executor executor = new Executor(rmlStore, new RecordsFactory(new DataFetcher(cwd, rmlStore)), functionLoader, outputStore, be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
+        Executor executor = new Executor(rmlStore, new RecordsFactory(new DataFetcher(workingDirectory, rmlStore)), functionLoader, outputStore, be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
 
         QuadStore result = executor.execute(executor.getTriplesMaps());
         result.removeDuplicates();
