@@ -1,42 +1,35 @@
 package de.dfki.asr.smartticket.service;
 
-import org.apache.http.HttpStatus;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 public class Utils {
-    public static void sendPostRequest(String link, String data, String[] contentTypes) throws IOException {
-        URL url = new URL(link);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("POST");
+    public static String sendPostRequest(String url, String data, String[] contentTypes) throws Exception {
+        CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+        StringEntity stringEntity = new StringEntity(data);
+        httpPost.setEntity(stringEntity);
         for (String contentType : contentTypes) {
-            urlConnection.setRequestProperty("Content-Type", contentType);
+            httpPost.setHeader("Accept", contentType);
+            httpPost.setHeader("Content-type", contentType);
         }
 
-        urlConnection.setDoOutput(true);
-        OutputStream outputStream = urlConnection.getOutputStream();
-        outputStream.write(data.getBytes());
-        outputStream.flush();
-        outputStream.close();
-
-        int responseCode = urlConnection.getResponseCode();
-        if (responseCode == HttpStatus.SC_OK) { //success
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    urlConnection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            System.out.println(response.toString());
+        CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
+        int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
+        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), "UTF-8");
+        closeableHttpClient.close();
+        closeableHttpResponse.close();
+        if (responseCode != 200) {
+            throw new Exception("Response code: " + responseCode + "\n" + responseString);
         }
+        System.out.println("SmartTicket->Response code and string:");
+        System.out.println(responseCode);
+        System.out.println(responseString);
+
+        return responseString;
     }
-
 }
