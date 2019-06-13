@@ -2,7 +2,6 @@ package de.dfki.asr.smartticket.Rest;
 
 import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
 import de.dfki.asr.smartticket.service.BookingProcess;
-import de.dfki.asr.smartticket.service.DummyStorage;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
 import org.eclipse.rdf4j.model.Model;

@@ -8,6 +8,7 @@ import de.dfki.asr.smartticket.ticket.TicketConfiguration;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 public class TicketWrapper {
