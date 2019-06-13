@@ -10,51 +10,69 @@ import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.MediaType;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.StringWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Utils {
-    private static final String workingDirectory =
-            new File(Utils.class.getResource("/application.properties").getFile()).getParentFile().getAbsolutePath();
+public final class Utils {
+    private Utils() {
 
-
-    public static Model turtleToRDFConverter(String input) throws IOException {
-        InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-        Model model = Rio.parse(inputStream, "", RDFFormat.TURTLE);
-
-        return model;
     }
 
-    public static Ticket rdfToTicketConverter(Model model) {
+    public static final String CHARSET = String.valueOf(Charset.defaultCharset());
+    public static final String XML_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_XML);
+    public static final String SMART_TICKET_URL = "http://localhost:8090/ticket";
+    public static final String TURTLE_MEDIA_TYPE = "text/turtle";
+    private static final String[] VDV_SERVICE_URIS = {"http://localhost:8802/vdv/ticket",
+            "http://192.168.99.100:8802/vdv/ticket"};
+    public static final String VDV_SERVICE_URI = VDV_SERVICE_URIS[0];
+
+    private static final String WORKING_DIRECTORY =
+            new File(Utils.class.getResource("/application.properties").getFile()).getParentFile().getAbsolutePath();
+
+    public static Model turtleToRDFConverter(final String input) throws IOException {
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+        return Rio.parse(inputStream, "", RDFFormat.TURTLE);
+    }
+
+    public static Ticket rdfToTicketConverter(final Model model) {
         Ticket ticket = new Ticket();
 
         for (Statement statement : model) {
@@ -85,7 +103,7 @@ public class Utils {
 
     }
 
-    public static Ticket getTicketFromDB(Ticket ticket, TicketRepo ticketRepo) {
+    public static Ticket getTicketFromDB(final Ticket ticket, final TicketRepo ticketRepo) {
         String name = ticketRepo.getObject("sm", "offer1", "gr", "name");
         name = convertFromWithUrlToWithoutUrl("gr", name);
         ticket.setName(name);
@@ -123,14 +141,14 @@ public class Utils {
         return ticket;
     }
 
-    public static String convertFromWithUrlToWithoutUrl(String prefix, String value) {
+    public static String convertFromWithUrlToWithoutUrl(final String prefix, final String value) {
         if (value.contains("#")) {
             return prefix + ":" + value.substring(value.indexOf("#") + 1);
         }
         return prefix + ":" + value;
     }
 
-    public static String convertObjectToJson(Object object) {
+    public static String convertObjectToJson(final Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.convertValue(object, JsonNode.class);
 
@@ -138,7 +156,7 @@ public class Utils {
 
     }
 
-    public static String convertObjectToXML(Object object) {
+    public static String convertObjectToXML(final Object object) {
         String xmlResult = null;
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
@@ -155,7 +173,8 @@ public class Utils {
         return xmlResult;
     }
 
-    public static String sendPostRequest(String url, String data, String[] contentTypes) throws Exception {
+    public static String sendPostRequest(final String url, final String data,
+                                         final String[] contentTypes) throws Exception {
         CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         StringEntity stringEntity = new StringEntity(data);
@@ -167,9 +186,9 @@ public class Utils {
 
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
         int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
-        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), "UTF-8");
+        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), CHARSET);
         closeableHttpClient.close();
-        if (responseCode != 200) {
+        if (responseCode != org.springframework.http.HttpStatus.OK.value()) {
             throw new Exception("Response code: " + responseCode + "\n" + responseString);
         }
         System.out.println("DFKI->Response code and string:");
@@ -179,69 +198,34 @@ public class Utils {
         return responseString;
     }
 
-
-    public static void sendXMLPostRequest(String link, String xmlData) throws IOException {
-        URL url = new URL(link);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("POST");
-        urlConnection.setRequestProperty("Content-Type", "application/xml");
-
-        urlConnection.setDoOutput(true);
-        OutputStream outputStream = urlConnection.getOutputStream();
-        outputStream.write(xmlData.getBytes());
-        outputStream.flush();
-        outputStream.close();
-
-        int responseCode = urlConnection.getResponseCode();
-        System.out.println("POST Response Code :  " + responseCode);
-
-        System.out.println("POST Response Message : " + urlConnection.getResponseMessage());
-        if (responseCode == HttpStatus.SC_OK) { //success
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    urlConnection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            System.out.println(response.toString());
-        } else {
-            System.out.println("POST NOT WORKED");
-        }
-    }
-
-    public static Map<String, String> parsePrefixes(String rdf_input) {
-
+    public static Map<String, String> parsePrefixes(final String rdfInput) {
+        final String prefixTitle = "@prefix ";
         Map<String, String> prefixes = new HashMap<>();
-        while (rdf_input.contains("@prefix ")) {
-            int prefixIndex = rdf_input.indexOf("@prefix ") + 8;
-            int semicolonIndex = rdf_input.indexOf(":");
-            int endOfLineIndex = rdf_input.indexOf("> .");
-            String prefix = rdf_input.substring(prefixIndex, semicolonIndex);
-            String url = rdf_input.substring(semicolonIndex, endOfLineIndex);
+        while (rdfInput.contains(prefixTitle)) {
+            int prefixIndex = rdfInput.indexOf(prefixTitle) + prefixTitle.length();
+            int semicolonIndex = rdfInput.indexOf(":");
+            int endOfLineIndex = rdfInput.indexOf("> .");
+            String prefixValue = rdfInput.substring(prefixIndex, semicolonIndex);
+            String url = rdfInput.substring(semicolonIndex, endOfLineIndex);
             url = url.substring(url.indexOf("<") + 1);
-            prefixes.put(prefix, url);
-            rdf_input = rdf_input.substring(endOfLineIndex + 3);
+            prefixes.put(prefixValue, url);
         }
         return prefixes;
     }
 
-    public static boolean isValidXml(String xml) {
+    public static boolean isValidXml(final String xml) {
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            InputStream inputStream = new ByteArrayInputStream(xml.getBytes(CHARSET));
             saxParser.parse(inputStream, new DefaultHandler());
-        } catch (Exception e) {
-//            e.printStackTrace();
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             return false;
         }
         return true;
 
     }
 
-    public static boolean isValidJson(String json) {
+    public static boolean isValidJson(final String json) {
         try {
             new JSONObject(json);
         } catch (JSONException ex) {
@@ -254,9 +238,9 @@ public class Utils {
         return true;
     }
 
-    public static void writeTextToFile(String fileName, String text) {
+    public static void writeTextToFile(final String fileName, final String text) {
         try {
-            File file = new File(workingDirectory + "/" + fileName);
+            File file = new File(WORKING_DIRECTORY + "/" + fileName);
 
             Path path = Paths.get(file.getPath());
             Files.write(path, Collections.singleton(text), Charset.forName("UTF-8"));
@@ -266,9 +250,9 @@ public class Utils {
         }
     }
 
-    public static String mapToRDF(String mappingFileName) throws Exception {
-        String outputFilePath = workingDirectory + "/output.ttl";
-        String mappingFile = workingDirectory + "/" + mappingFileName;
+    public static String mapToRDF(final String mappingFileName) throws Exception {
+        String outputFilePath = WORKING_DIRECTORY + "/output.ttl";
+        String mappingFile = WORKING_DIRECTORY + "/" + mappingFileName;
 
         InputStream mappingStream = new FileInputStream(mappingFile);
         Model model = Rio.parse(mappingStream, "", RDFFormat.TURTLE);
@@ -278,22 +262,34 @@ public class Utils {
 
         RDF4JStore outputStore = new RDF4JStore();
 
-        Executor executor = new Executor(rmlStore, new RecordsFactory(new DataFetcher(workingDirectory, rmlStore)), functionLoader, outputStore, be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
+        Executor executor = new Executor(rmlStore, new RecordsFactory(
+                new DataFetcher(WORKING_DIRECTORY, rmlStore)),
+                functionLoader, outputStore,
+                be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
 
         QuadStore result = executor.execute(executor.getTriplesMaps());
         result.removeDuplicates();
         result.setNamespaces(rmlStore.getNamespaces());
 
-        File outputFile = new File(outputFilePath);
-        FileWriter fileWriter = new FileWriter(outputFile, false);
-        result.write(fileWriter, "turtle");
-        fileWriter.close();
+        FileWriter fileWriter = new FileWriter(outputFilePath, Charset.defaultCharset(), false);
+        try {
+            result.write(fileWriter, "turtle");
+        } catch (Throwable throwable) {
+            try {
+                fileWriter.close();
+            } catch (IOException ioEx) {
+                if (throwable != ioEx) {
+                    throwable.addSuppressed(ioEx);
+                }
+            }
+            throw throwable;
+        } finally {
+            fileWriter.close();
+        }
 
         Path outputPath = Paths.get(outputFilePath);
         byte[] encoded = Files.readAllBytes(outputPath);
-        String resultString = new String(encoded, Charset.defaultCharset());
-
-        return resultString;
+        return new String(encoded, Charset.defaultCharset());
     }
 
 }
