@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.io.IOException;
 
 @Controller
@@ -39,8 +40,8 @@ public class TicketEndpoint {
     public ResponseEntity<?> receiveXmlOrJsonTicket(@RequestBody final String input) {
         String response = "";
         try {
-            response = Utils.sendPostRequest(DummyStorage.DFKI_TICKET_SERVICE_URL, input,
-                    new String[]{DummyStorage.XML_MEDIA_TYPE, DummyStorage.JSON_MEDIA_TYPE});
+            response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
+                    new String[]{Utils.XML_MEDIA_TYPE, Utils.JSON_MEDIA_TYPE});
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(SpringExceptionHandlers.handleIoException(e), HttpStatus.BAD_REQUEST);

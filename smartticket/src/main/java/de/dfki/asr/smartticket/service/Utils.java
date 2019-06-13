@@ -7,11 +7,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.nio.charset.Charset;
 
 public final class Utils {
     private Utils() {
 
     }
+
+    public static final String DFKI_TICKET_SERVICE_URL = "http://localhost:8801/dfki/ticket/service/ticket";
+    public static final String XML_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_XML);
+    public static final String JSON_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_JSON);
+    public static final String CHARSET = String.valueOf(Charset.defaultCharset());
 
     public static String sendPostRequest(final String url, final String data,
                                          final String[] contentTypes) throws Exception {
@@ -26,7 +34,7 @@ public final class Utils {
 
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
         int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
-        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), DummyStorage.CHARSET);
+        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), CHARSET);
         closeableHttpClient.close();
         closeableHttpResponse.close();
         if (responseCode != HttpStatus.OK.value()) {
