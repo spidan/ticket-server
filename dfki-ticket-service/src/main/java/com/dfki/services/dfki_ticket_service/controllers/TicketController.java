@@ -5,14 +5,10 @@ import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.ws.rs.Consumes;
-import java.io.IOException;
 
 
 @RestController("TicketController")
@@ -21,7 +17,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping(value = "dfki/ticket/service/ticket", consumes = "text/turtle")
-    public ResponseEntity<?> saveTicketRdf(@RequestBody String rdfInput) {
+    public ResponseEntity<?> saveTicketRdf(@RequestBody final String rdfInput) {
         try {
             Ticket ticket = ticketService.save(rdfInput);
 
@@ -38,7 +34,7 @@ public class TicketController {
     }
 
     @PostMapping(value = "dfki/ticket/service/ticket", consumes = {"application/xml", "application/json"})
-    public ResponseEntity<?> saveTicket(@RequestBody String input) {
+    public ResponseEntity<?> saveTicket(@RequestBody final String input) {
         String result = "";
         try {
             if (Utils.isValidXml(input)) {
@@ -50,15 +46,16 @@ public class TicketController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Mapping process failed. Most likely, mapping file is " +
-                    "not proper for the input.\n" + e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Mapping process failed. Most likely, mapping file is "
+                    + "not proper for the input.\n" + e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
         if (result.equals("")) {
-            return new ResponseEntity<>("Mapping process failed. Most likely, mapping file is " +
-                    "not proper for the input.\n", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Mapping process failed. Most likely, mapping file is "
+                    + "not proper for the input.\n", HttpStatus.NOT_ACCEPTABLE);
         } else {
             try {
-                result = Utils.sendPostRequest("http://localhost:8090/ticket", result, new String[]{"text/turtle"});
+                result = Utils.sendPostRequest(Utils.SMART_TICKET_URL, result,
+                        new String[]{Utils.TURTLE_MEDIA_TYPE});
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
