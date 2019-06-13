@@ -6,9 +6,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.http.HttpStatus;
 
-public class Utils {
-    public static String sendPostRequest(String url, String data, String[] contentTypes) throws Exception {
+public final class Utils {
+    private Utils() {
+
+    }
+
+    public static String sendPostRequest(final String url, final String data,
+                                         final String[] contentTypes) throws Exception {
         CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         StringEntity stringEntity = new StringEntity(data);
@@ -20,10 +26,10 @@ public class Utils {
 
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
         int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
-        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), "UTF-8");
+        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), DummyStorage.CHARSET);
         closeableHttpClient.close();
         closeableHttpResponse.close();
-        if (responseCode != 200) {
+        if (responseCode != HttpStatus.OK.value()) {
             throw new Exception("Response code: " + responseCode + "\n" + responseString);
         }
         System.out.println("SmartTicket->Response code and string:");

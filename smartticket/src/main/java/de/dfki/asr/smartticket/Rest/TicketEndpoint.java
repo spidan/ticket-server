@@ -2,6 +2,7 @@ package de.dfki.asr.smartticket.Rest;
 
 import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
 import de.dfki.asr.smartticket.service.BookingProcess;
+import de.dfki.asr.smartticket.service.DummyStorage;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
 import org.eclipse.rdf4j.model.Model;
@@ -38,7 +39,8 @@ public class TicketEndpoint {
     public ResponseEntity<?> receiveXmlOrJsonTicket(@RequestBody final String input) {
         String response = "";
         try {
-            response = Utils.sendPostRequest("http://localhost:8801/dfki/ticket/service/ticket", input, new String[]{"application/xml", "application/json"});
+            response = Utils.sendPostRequest(DummyStorage.DFKI_TICKET_SERVICE_URL, input,
+                    new String[]{DummyStorage.XML_MEDIA_TYPE, DummyStorage.JSON_MEDIA_TYPE});
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(SpringExceptionHandlers.handleIoException(e), HttpStatus.BAD_REQUEST);

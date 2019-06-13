@@ -5,10 +5,10 @@ import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
 import de.dfki.asr.smartticket.data.InMemoryRepo;
 import de.dfki.asr.smartticket.ticket.Request;
 import de.dfki.asr.smartticket.ticket.TicketConfiguration;
-import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 public class TicketWrapper {
 	private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);

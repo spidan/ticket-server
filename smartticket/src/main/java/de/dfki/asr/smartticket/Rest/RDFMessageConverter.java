@@ -1,7 +1,5 @@
 package de.dfki.asr.smartticket.Rest;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 import org.springframework.http.HttpInputMessage;
@@ -10,6 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class RDFMessageConverter<T> extends AbstractHttpMessageConverter<T> {
     private static final String BASE_URI = "http://www.smartmaas.de";
