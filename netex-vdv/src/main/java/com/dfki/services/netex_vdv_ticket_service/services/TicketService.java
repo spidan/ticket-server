@@ -2,9 +2,9 @@ package com.dfki.services.netex_vdv_ticket_service.services;
 
 import com.dfki.services.netex_vdv_ticket_service.Utils;
 import com.dfki.services.netex_vdv_ticket_service.models.Ticket;
-import java.io.IOException;
-import javax.xml.bind.JAXBException;
 import org.slf4j.LoggerFactory;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 
 public class TicketService {
 

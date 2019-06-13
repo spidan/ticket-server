@@ -1,9 +1,10 @@
 package com.dfki.services.netex_vdv_ticket_service;
 
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+
+import java.io.IOException;
 
 
 public class UtilTests {
