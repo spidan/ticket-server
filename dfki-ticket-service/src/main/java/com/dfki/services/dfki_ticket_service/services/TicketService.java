@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.Map;
 
 @Component
 public class TicketService {

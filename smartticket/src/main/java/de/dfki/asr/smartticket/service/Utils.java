@@ -6,7 +6,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.nio.charset.Charset;
@@ -34,7 +33,7 @@ public final class Utils {
         }
 
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
-        int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
+//        int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
         String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), CHARSET);
         closeableHttpClient.close();
         closeableHttpResponse.close();

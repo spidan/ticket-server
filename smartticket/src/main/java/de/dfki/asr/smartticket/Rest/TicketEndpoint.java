@@ -1,6 +1,5 @@
 package de.dfki.asr.smartticket.Rest;
 
-import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
 import de.dfki.asr.smartticket.exceptions.CustomException;
 import de.dfki.asr.smartticket.service.BookingProcess;
 import de.dfki.asr.smartticket.service.TicketWrapper;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.io.IOException;
 
 @Controller
 public class TicketEndpoint {
