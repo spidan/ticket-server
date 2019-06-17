@@ -12,7 +12,7 @@
     <artifactId>dfki_ticket_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Dfki_Ticket_Service</name>
-    <description>Spring Boot project for DFKI Ticket Service</description>
+    <description>Spring Boot project for DFKI_Ticket_Service</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
@@ -22,7 +22,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
-
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -79,6 +78,11 @@
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>be.ugent.rml</groupId>
+            <artifactId>rmlmapper</artifactId>
+            <version>4.4.0</version>
         </dependency>
     </dependencies>
     <build>
