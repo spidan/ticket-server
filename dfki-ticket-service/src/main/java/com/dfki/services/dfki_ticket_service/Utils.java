@@ -53,8 +53,8 @@ public final class Utils {
     public static final String JSON_XML_ERR_MSG = "The input is neither JSON nor XML.";
     public static final String SMART_TICKET_CONN_ERR_MSG = "Connection to SmartTicket "
             + "service failed. ";
-    public static final String MAPPING_ERR_MSG = "Mapping process failed. " +
-            "Most likely, mapping file is not proper for the input.";
+    public static final String MAPPING_ERR_MSG = "Mapping process failed. "
+            + "Most likely, mapping file is not proper for the input.";
     public static final String CHARSET = String.valueOf(Charset.defaultCharset());
     public static final String XML_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_XML);
     public static final String SMART_TICKET_URL = "http://localhost:8090/ticket";
@@ -270,7 +270,7 @@ public final class Utils {
         result.removeDuplicates();
         result.setNamespaces(rmlStore.getNamespaces());
 
-        FileWriter fileWriter = new FileWriter(outputFilePath, Charset.defaultCharset(), false);
+        Writer fileWriter = new OutputStreamWriter(new FileOutputStream(outputFilePath), StandardCharsets.UTF_8);
         try {
             result.write(fileWriter, "turtle");
         } catch (Throwable throwable) {
