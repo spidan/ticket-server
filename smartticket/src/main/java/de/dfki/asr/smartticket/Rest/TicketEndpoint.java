@@ -1,6 +1,7 @@
 package de.dfki.asr.smartticket.Rest;
 
 import de.dfki.asr.smartticket.Rest.ExceptionHandlers.SpringExceptionHandlers;
+import de.dfki.asr.smartticket.exceptions.CustomException;
 import de.dfki.asr.smartticket.service.BookingProcess;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
@@ -41,14 +42,12 @@ public class TicketEndpoint {
         try {
             response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
                     new String[]{Utils.XML_MEDIA_TYPE, Utils.JSON_MEDIA_TYPE});
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(SpringExceptionHandlers.handleIoException(e), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new CustomException(Utils.DFKI_SERVICE_CONN_ERR_MSG + " Additional info:"
+                    + e.getMessage());
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
