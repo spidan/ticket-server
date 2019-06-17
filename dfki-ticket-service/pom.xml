@@ -16,8 +16,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <rml.mapper.jar>C:/Workspaces/ticket-service-teze/ticket-service/classes/artifacts/rmlmapper_jar/rmlmapper.jar
-        </rml.mapper.jar>
     </properties>
     <dependencies>
         <dependency>
@@ -81,19 +79,6 @@
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>be.ugent.rml</groupId>
-            <artifactId>rmlmapper</artifactId>
-            <version>4.4.0</version>
-            <scope>system</scope>
-            <systemPath>${rml.mapper.jar}</systemPath>
-            <exclusions>
-                <exclusion>
-                    <groupId>be.ugent.rml</groupId>
-                    <artifactId>org.slf4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
     <build>
