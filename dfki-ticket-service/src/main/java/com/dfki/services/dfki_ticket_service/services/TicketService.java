@@ -20,13 +20,11 @@ public class TicketService {
 
     public Ticket save(final String rdfInput) throws IOException {
         Model model = Utils.turtleToRDFConverter(rdfInput);
-        Map<String, String> prefixes = Utils.parsePrefixes(rdfInput);
-        if (ticketRepo.save(model)) {
-            Ticket ticket = Utils.getTicketFromDB(new Ticket(), ticketRepo);
-            ticket.setPrefixes(prefixes);
-            return ticket;
-        }
-        return null;
+//        Map<String, String> prefixes = Utils.parsePrefixes(rdfInput);
+        ticketRepo.save(model);
+        Ticket ticket = Utils.getTicketFromDB(new Ticket(), ticketRepo);
+//            ticket.setPrefixes(prefixes);
+        return ticket;
     }
 
     public String toJson(final Ticket ticket) {

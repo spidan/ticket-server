@@ -16,7 +16,8 @@ public final class Utils {
 
     }
 
-    public static final String DFKI_TICKET_SERVICE_URL = "http://localhost:8801/dfki/ticket/service/ticket";
+    public static final String DFKI_SERVICE_CONN_ERR_MSG = "Connection to Dfki Ticket Service failed.";
+    public static final String DFKI_TICKET_SERVICE_URL = "http://localhost:8801/ticket";
     public static final String XML_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_XML);
     public static final String JSON_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_JSON);
     public static final String CHARSET = String.valueOf(Charset.defaultCharset());
@@ -37,12 +38,10 @@ public final class Utils {
         String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), CHARSET);
         closeableHttpClient.close();
         closeableHttpResponse.close();
-        if (responseCode != HttpStatus.OK.value()) {
-            throw new Exception("Response code: " + responseCode + "\n" + responseString);
-        }
-        System.out.println("SmartTicket->Response code and string:");
-        System.out.println(responseCode);
-        System.out.println(responseString);
+
+//        if (responseCode != HttpStatus.OK.value()) {
+//            throw new Exception("Response code: " + responseCode + "\n" + responseString);
+//        }
 
         return responseString;
     }

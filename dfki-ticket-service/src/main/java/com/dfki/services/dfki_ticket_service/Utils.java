@@ -56,6 +56,15 @@ public final class Utils {
 
     }
 
+    public static final String RDF_REPO_ERR_MSG = "Couldn't create repository for RDF models.";
+    public static final String VDV_SERVICE_CONN_ERR_MSG = "Connection to Vdv service failed.";
+    public static final String INVALID_TURTLE_ERROR_MSG = "Turtle input is probably invalid."
+            + " It is not converted to a RDF model successfully.";
+    public static final String JSON_XML_ERR_MSG = "The input is neither JSON nor XML.";
+    public static final String SMART_TICKET_CONN_ERR_MSG = "Connection to SmartTicket "
+            + "service failed. ";
+    public static final String MAPPING_ERR_MSG = "Mapping process failed. " +
+            "Most likely, mapping file is not proper for the input.";
     public static final String CHARSET = String.valueOf(Charset.defaultCharset());
     public static final String XML_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_XML);
     public static final String SMART_TICKET_URL = "http://localhost:8090/ticket";
