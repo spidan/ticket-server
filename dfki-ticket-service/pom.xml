@@ -2,12 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.4.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
+	<parent>
+		<groupId>de.dfki.asr</groupId>
+		<artifactId>ticket-services</artifactId>
+		<version>0.1</version>
+	</parent>
     <groupId>com.dfki.services</groupId>
     <artifactId>dfki_ticket_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -18,9 +17,23 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
+	<dependency>
+		<groupId>be.ugent.rml</groupId>
+		<artifactId>rmlmapper</artifactId>
+		<version>4.4.0</version>
+	</dependency>
+	<dependency>
+		<!-- Import dependency management from Spring Boot -->
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-dependencies</artifactId>
+		<version>1.3.3.RELEASE</version>
+		<type>pom</type>
+		<scope>import</scope>
+	</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
+	    <version>2.1.5.RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -31,6 +44,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+	    <version>2.1.5.RELEASE</version>
             <exclusions>
                 <exclusion>
                     <artifactId>logback-classic</artifactId>
@@ -45,6 +59,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+	    <version>2.1.5.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -176,8 +191,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
