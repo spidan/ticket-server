@@ -1,12 +1,13 @@
 package de.dfki.asr.smartticket.Rest.ExceptionHandlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.io.IOException;
 import org.eclipse.rdf4j.rio.RDFParseException;
 import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.io.IOException;
 
 @Component
 public final class SpringExceptionHandlers {

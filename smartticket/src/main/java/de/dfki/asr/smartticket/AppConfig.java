@@ -9,9 +9,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 @Configuration
 public class AppConfig {
 
-	@Bean
-	public HttpMessageConverters customConverters() {
-		HttpMessageConverter rdfConverter = new RDFMessageConverter<>();
-		return new HttpMessageConverters(rdfConverter);
-	}
+    @Bean
+    public HttpMessageConverters customConverters() {
+        HttpMessageConverter rdfConverter = new RDFMessageConverter<>();
+        return new HttpMessageConverters(rdfConverter);
+    }
 }

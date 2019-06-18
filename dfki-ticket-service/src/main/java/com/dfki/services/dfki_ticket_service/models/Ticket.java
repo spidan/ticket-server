@@ -34,18 +34,18 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return "Ticket{" +
-                "apiToken='" + apiToken + '\'' +
-                ", begin='" + begin + '\'' +
-                ", end='" + end + '\'' +
-                ", name='" + name + '\'' +
-                ", iata='" + iata + '\'' +
-                ", includes='" + includes + '\'' +
-                ", accessedBus='" + accessedBus + '\'' +
-                ", fromStation='" + fromStation + '\'' +
-                ", toStation='" + toStation + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+        return "Ticket{"
+                + "apiToken='" + apiToken + '\''
+                + ", begin='" + begin + '\''
+                + ", end='" + end + '\''
+                + ", name='" + name + '\''
+                + ", iata='" + iata + '\''
+                + ", includes='" + includes + '\''
+                + ", accessedBus='" + accessedBus + '\''
+                + ", fromStation='" + fromStation + '\''
+                + ", toStation='" + toStation + '\''
+                + ", type='" + type + '\''
+                + '}';
     }
 
     public String getApiToken() {
@@ -60,80 +60,80 @@ public class Ticket {
         return begin;
     }
 
-    public void setBegin(String begin) {
-        this.begin = begin;
+    public void setBegin(final String beginStr) {
+        this.begin = beginStr;
     }
 
     public String getEnd() {
         return end;
     }
 
-    public void setEnd(String end) {
-        this.end = end;
+    public void setEnd(final String endStr) {
+        this.end = endStr;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String nameStr) {
+        this.name = nameStr;
     }
 
     public String getIncludes() {
-        if (includes.contains("#")) {
+        if (includes != null && includes.contains("#")) {
             return includes.substring(includes.indexOf("#") + 1);
         }
         return includes;
     }
 
-    public void setIncludes(String includes) {
-        this.includes = includes;
+    public void setIncludes(final String includesStr) {
+        this.includes = includesStr;
     }
 
     public String getAccessedBus() {
-        if (accessedBus.contains("#")) {
+        if (accessedBus != null && accessedBus.contains("#")) {
             return accessedBus.substring(accessedBus.indexOf("#") + 1);
         }
         return accessedBus;
     }
 
-    public void setAccessedBus(String accessedBus) {
-        this.accessedBus = accessedBus;
+    public void setAccessedBus(final String accessedBusStr) {
+        this.accessedBus = accessedBusStr;
     }
 
     public String getToStation() {
         return toStation;
     }
 
-    public void setToStation(String toStation) {
-        this.toStation = toStation;
+    public void setToStation(final String toStationStr) {
+        this.toStation = toStationStr;
     }
 
     public String getFromStation() {
         return fromStation;
     }
 
-    public void setFromStation(String fromStation) {
-        this.fromStation = fromStation;
+    public void setFromStation(final String fromStationStr) {
+        this.fromStation = fromStationStr;
     }
 
     public String getType() {
-        if (type.contains("#")) {
+        if (type != null && type.contains("#")) {
             return type.substring(type.indexOf("#") + 1);
         }
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(final String typeStr) {
+        this.type = typeStr;
     }
 
     public Map<String, String> getPrefixes() {
         return prefixes;
     }
 
-    public void setPrefixes(Map<String, String> prefixes) {
-        this.prefixes = prefixes;
+    public void setPrefixes(final Map<String, String> prefixesMap) {
+        this.prefixes = prefixesMap;
     }
 }

@@ -1,75 +1,77 @@
 package com.dfki.services.dfki_ticket_service.controllers;
 
 import com.dfki.services.dfki_ticket_service.Utils;
+import com.dfki.services.dfki_ticket_service.exceptions.CustomException;
 import com.dfki.services.dfki_ticket_service.models.Ticket;
 import com.dfki.services.dfki_ticket_service.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.Consumes;
 import java.io.IOException;
 
 
-@RestController("TicketController")
+@RestController()
 public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping(value = "ticket/in_rdf", consumes = "text/turtle")
-    public ResponseEntity<?> saveTicketRdf(@RequestBody String rdfInput) {
+    @PostMapping(value = "/ticket", consumes = "text/turtle")
+    public ResponseEntity<?> saveTicketRdf(@RequestBody final String rdfInput) {
+        Ticket ticket = null;
         try {
-            Ticket ticket = ticketService.save(rdfInput);
+            ticket = ticketService.save(rdfInput);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomException(Utils.INVALID_TURTLE_ERROR_MSG + "Additional info:"
+                    + e.getMessage());
+        }
 
-            String ticketJson = ticketService.toJson(ticket);
-
+        String ticketJson = ticketService.toJson(ticket);
+        try {
             ticketService.postToVdvService(ticket);
-
-            return new ResponseEntity<>(ticketJson, HttpStatus.OK);
-
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Process Failed", HttpStatus.NOT_ACCEPTABLE);
+            throw new CustomException(Utils.VDV_SERVICE_CONN_ERR_MSG + " Additional info:"
+                    + e.getMessage());
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(ticketJson);
+
     }
 
-
-    @PostMapping(value = "ticket/in_xml", consumes = {"application/xml", "application/json"})
-    public ResponseEntity<?> saveTicket(@RequestBody String input) {
-        String result = "null";
-        if (Utils.isXmlValid(input)) {
-            try {
+    @PostMapping(value = "/ticket", consumes = {"application/xml", "application/json"})
+    public ResponseEntity<?> saveTicket(@RequestBody final String input) {
+        String result = "";
+        try {
+            if (Utils.isValidXml(input)) {
                 result = ticketService.xmlToRdf(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println(input);
-            System.out.println("Above Xml is converted into below RDF:");
-            System.out.println(result);
-
-        } else if (Utils.isJsonValid(input)) {
-            try {
+            } else if (Utils.isValidJson(input)) {
                 result = ticketService.jsonToRdf(input);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                throw new CustomException(Utils.JSON_XML_ERR_MSG);
+            }
+        } catch (Error | Exception e) {
+            e.printStackTrace();
+            throw new CustomException(Utils.MAPPING_ERR_MSG + "Additional info:"
+                    + e.getMessage());
+        }
+        if (result.equals("")) {
+            throw new CustomException(Utils.MAPPING_ERR_MSG);
+        } else {
+            try {
+                result = Utils.sendPostRequest(Utils.SMART_TICKET_URL, result,
+                        new String[]{Utils.TURTLE_MEDIA_TYPE});
             } catch (Exception e) {
                 e.printStackTrace();
+
+                throw new CustomException(Utils.SMART_TICKET_CONN_ERR_MSG + "Additional info:"
+                        + e.getMessage());
             }
-            System.out.println(input);
-            System.out.println("Above Json is converted into below RDF:");
-            System.out.println(result);
-        } else {
-            return new ResponseEntity<>("The input is not valid!!!",HttpStatus.NOT_ACCEPTABLE);
         }
-
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-
 }
