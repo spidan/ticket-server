@@ -1,6 +1,6 @@
 package de.dfki.asr.smartticket.Rest;
 
-import de.dfki.asr.smartticket.exceptions.CustomException;
+import de.dfki.asr.smartticket.exceptions.ServiceConnectionException;
 import de.dfki.asr.smartticket.service.BookingProcess;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
@@ -8,6 +8,7 @@ import org.eclipse.rdf4j.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,11 +39,11 @@ public class TicketEndpoint {
         String response = "";
         try {
             response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
-                    new String[]{Utils.XML_MEDIA_TYPE, Utils.JSON_MEDIA_TYPE});
+                    new String[]{String.valueOf(MediaType.APPLICATION_XML),
+                            String.valueOf(MediaType.APPLICATION_JSON)});
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CustomException(Utils.DFKI_SERVICE_CONN_ERR_MSG + " Additional info:"
-                    + e.getMessage());
+            throw new ServiceConnectionException("DfkiTicket", e.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
