@@ -32,8 +32,8 @@ public class ControllerExceptionHandler {
     public final ResponseEntity<Object> handleRmlMappingException(final RmlMappingException e) {
         List<String> details = new ArrayList<>();
         details.add(e.getLocalizedMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Input XML/JSON structure is not "
-                + "correct.", details);
+        ErrorResponse errorResponse = new ErrorResponse("Input structure is neither "
+                + "a valid XML nor JSON.", details);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
