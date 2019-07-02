@@ -22,7 +22,6 @@ import org.eclipse.rdf4j.rio.Rio;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.MediaType;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -46,17 +45,6 @@ public final class Utils {
 
     }
 
-    public static final String RDF_REPO_ERR_MSG = "Couldn't create repository for RDF models.";
-    public static final String VDV_SERVICE_CONN_ERR_MSG = "Connection to Vdv service failed.";
-    public static final String INVALID_TURTLE_ERROR_MSG = "Turtle input is probably invalid."
-            + " It is not converted to a RDF model successfully.";
-    public static final String JSON_XML_ERR_MSG = "The input is neither JSON nor XML.";
-    public static final String SMART_TICKET_CONN_ERR_MSG = "Connection to SmartTicket "
-            + "service failed. ";
-    public static final String MAPPING_ERR_MSG = "Mapping process failed. "
-            + "Most likely, mapping file is not proper for the input.";
-    public static final String CHARSET = String.valueOf(Charset.defaultCharset());
-    public static final String XML_MEDIA_TYPE = String.valueOf(MediaType.APPLICATION_XML);
     public static final String SMART_TICKET_URL = "http://localhost:8090/ticket";
     public static final String TURTLE_MEDIA_TYPE = "text/turtle";
     private static final String[] VDV_SERVICE_URIS = {"http://localhost:8802/vdv/ticket",
@@ -184,16 +172,8 @@ public final class Utils {
         }
 
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
-        int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
-        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), CHARSET);
+        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), Charset.defaultCharset());
         closeableHttpClient.close();
-        if (responseCode != org.springframework.http.HttpStatus.OK.value()) {
-            throw new Exception("Response code: " + responseCode + "\n" + responseString);
-        }
-        System.out.println("DFKI->Response code and string:");
-        System.out.println(responseCode);
-        System.out.println(responseString);
-
         return responseString;
     }
 
@@ -215,7 +195,7 @@ public final class Utils {
     public static boolean isValidXml(final String xml) {
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            InputStream inputStream = new ByteArrayInputStream(xml.getBytes(CHARSET));
+            InputStream inputStream = new ByteArrayInputStream(xml.getBytes(Charset.defaultCharset()));
             saxParser.parse(inputStream, new DefaultHandler());
         } catch (ParserConfigurationException | IOException | SAXException e) {
             return false;

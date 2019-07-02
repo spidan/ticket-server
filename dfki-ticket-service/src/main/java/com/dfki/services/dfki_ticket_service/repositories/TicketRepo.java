@@ -1,7 +1,5 @@
 package com.dfki.services.dfki_ticket_service.repositories;
 
-import com.dfki.services.dfki_ticket_service.Utils;
-import com.dfki.services.dfki_ticket_service.exceptions.CustomException;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
@@ -14,13 +12,7 @@ public class TicketRepo {
     private Repository repository;
 
     public TicketRepo() {
-        try {
-            this.repository = new SailRepository(new MemoryStore());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CustomException(Utils.RDF_REPO_ERR_MSG + "Additional info:"
-                    + e.getMessage());
-        }
+        this.repository = new SailRepository(new MemoryStore());
         this.repository.init();
     }
 

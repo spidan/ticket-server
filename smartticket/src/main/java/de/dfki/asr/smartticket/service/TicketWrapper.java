@@ -12,26 +12,28 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class TicketWrapper {
-	private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);
-	private final InMemoryRepo repo;
+    private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);
+    private final InMemoryRepo repo;
 
-	public TicketWrapper(final InMemoryRepo processRepo) {
-	    this.repo = processRepo;
-	}
+    public TicketWrapper(final InMemoryRepo processRepo) {
+        this.repo = processRepo;
+    }
 
-	public String receiveTicket() {
-		TicketConfiguration config = new TicketConfiguration();
-		config.getData(repo);
-		Request ticketRequest = new Request(config);
-		try {
-			HttpResponse response = ticketRequest.send();
-			return response.toString();
-		} catch (JsonProcessingException ex) {
-			LOG.error("Invalid JSON in input: " + ex.getMessage());
-			return SpringExceptionHandlers.handleJsonException(ex);
-		} catch (IOException ex) {
-			LOG.error("Error in connection: " + ex.getMessage());
-			return SpringExceptionHandlers.handleIoException(ex);
-		}
-	}
+    public String receiveTicket() {
+        TicketConfiguration config = new TicketConfiguration();
+        config.getData(repo);
+        Request ticketRequest = new Request(config);
+        try {
+            HttpResponse response = ticketRequest.send();
+            return response.toString();
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+            LOG.error("Invalid JSON in input: " + ex.getMessage());
+            return SpringExceptionHandlers.handleJsonException(ex);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            LOG.error("Error in connection: " + ex.getMessage());
+            return SpringExceptionHandlers.handleIoException(ex);
+        }
+    }
 }
