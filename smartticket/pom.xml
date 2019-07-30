@@ -71,6 +71,12 @@
 			<artifactId>rdf4j-rio-turtle</artifactId>
 			<version>${rdf4j.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>de.escalon.hypermedia</groupId>
+			<artifactId>hydra-java</artifactId>
+			<version>0.2.0-beta3</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
