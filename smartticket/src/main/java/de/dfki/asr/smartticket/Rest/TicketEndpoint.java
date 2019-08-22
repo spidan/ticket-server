@@ -4,6 +4,7 @@ import de.dfki.asr.smartticket.exceptions.ServiceConnectionException;
 import de.dfki.asr.smartticket.service.BookingProcess;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
+import java.io.IOException;
 import org.eclipse.rdf4j.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +23,20 @@ public class TicketEndpoint {
 
     @RequestMapping(value = "/ticket",
             method = RequestMethod.POST,
-            consumes = "text/turtle")
+            consumes = "text/turtle",
+	    produces = "image/png")
     @ResponseBody
-    public String receiveTicket(@RequestBody final Model model) {
+    public byte[] receiveTicket(@RequestBody final Model model) {
         BookingProcess booking = new BookingProcess();
         booking.writeRequestToRepo(model);
+	byte[] ticketResult = null;
         TicketWrapper ticket = new TicketWrapper(booking.getRepo());
-        return ticket.receiveTicket();
+	    try {
+		    ticketResult = ticket.receiveTicket();
+	    } catch (IOException ex) {
+		    LOG.warn(ex.getMessage());
+	    }
+	return ticketResult;
     }
 
     @RequestMapping(value = "/ticket",
