@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class Request {
 
-	private static final String TICKET_URL = "http://localhost:8080/ticket";
+	private static final String TICKET_URL = "http://localhost:8083/ticket";
 	private final TicketConfiguration configuration;
 
 	public Request(final TicketConfiguration config) {
