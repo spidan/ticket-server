@@ -70,7 +70,7 @@ public class TicketService {
     }
 
     public String jsonToRdf(final String jsonString) throws Exception {
-        String mappingFile = "json_mapping.ttl";
+        String mappingFile = "transport_mapping.ttl";
         String fileName = "json_text.json";
         Utils.writeTextToFile(fileName, jsonString);
         return Utils.mapToRDF(mappingFile);
