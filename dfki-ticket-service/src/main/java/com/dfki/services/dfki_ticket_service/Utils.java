@@ -1,6 +1,5 @@
 package com.dfki.services.dfki_ticket_service;
 
-import be.ugent.rml.DataFetcher;
 import be.ugent.rml.Executor;
 import be.ugent.rml.functions.FunctionLoader;
 import be.ugent.rml.records.RecordsFactory;
@@ -241,8 +240,7 @@ public final class Utils {
 
         RDF4JStore outputStore = new RDF4JStore();
 
-        Executor executor = new Executor(rmlStore, new RecordsFactory(
-                new DataFetcher(WORKING_DIRECTORY, rmlStore)),
+        Executor executor = new Executor(rmlStore, new RecordsFactory(WORKING_DIRECTORY),
                 functionLoader, outputStore,
                 be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
 
