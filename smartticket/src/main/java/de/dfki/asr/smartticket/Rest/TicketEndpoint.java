@@ -25,16 +25,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class TicketEndpoint {
-    private static final Logger LOG = LoggerFactory.getLogger(TicketEndpoint.class);
-    private static final String SERVICE_URL = "test";
-    @RequestMapping(value = "/ticket",
-            method = RequestMethod.POST,
-            consumes = "text/turtle",
-	    produces = "image/png")
-    @ResponseBody
-    public byte[] receiveTicket(@RequestBody final Model model) {
-	return 	createTicketFromModel(model);
-    }
+
+	private static final Logger LOG = LoggerFactory.getLogger(TicketEndpoint.class);
+	private static final String SERVICE_URL = "test";
+
+	@RequestMapping(value = "/ticket",
+		method = RequestMethod.POST,
+		consumes = "text/turtle",
+		produces = "image/png")
+	@ResponseBody
+	public byte[] receiveTicket(@RequestBody final Model model) {
+		return createTicketFromModel(model);
+	}
 
 	private byte[] createTicketFromModel(final Model model) {
 		BookingProcess booking = new BookingProcess();
@@ -49,26 +51,26 @@ public class TicketEndpoint {
 		return ticketResult;
 	}
 
-    @RequestMapping(value = "/ticket",
-            method = RequestMethod.POST,
-            consumes = {"application/xml", "application/json"})
-    @ResponseBody
-    public byte[] receiveXmlOrJsonTicket(@RequestBody final String input)
-	throws UnsupportedEncodingException, IOException {
-        String response = "";
-        try {
-            response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
-                    new String[]{String.valueOf(MediaType.APPLICATION_XML),
-                            String.valueOf(MediaType.APPLICATION_JSON)});
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServiceConnectionException("DfkiTicket", e.getMessage());
-        }
-       InputStream rdfStream = new ByteArrayInputStream(response.getBytes("utf-8"));
-	RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
-	Model model = new LinkedHashModel();
-	parser.setRDFHandler(new StatementCollector(model));
-	parser.parse(rdfStream, SERVICE_URL);
-	return 	createTicketFromModel(model);
-    }
+	@RequestMapping(value = "/ticket",
+		method = RequestMethod.POST,
+		consumes = {"application/xml", "application/json"})
+	@ResponseBody
+	public byte[] receiveXmlOrJsonTicket(@RequestBody final String input)
+		throws UnsupportedEncodingException, IOException {
+		String response = "";
+		try {
+			response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
+				new String[]{String.valueOf(MediaType.APPLICATION_XML),
+					String.valueOf(MediaType.APPLICATION_JSON)});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServiceConnectionException("DfkiTicket", e.getMessage());
+		}
+		InputStream rdfStream = new ByteArrayInputStream(response.getBytes("utf-8"));
+		RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
+		Model model = new LinkedHashModel();
+		parser.setRDFHandler(new StatementCollector(model));
+		parser.parse(rdfStream, SERVICE_URL);
+		return createTicketFromModel(model);
+	}
 }
