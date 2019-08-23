@@ -18,30 +18,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController()
 public class TicketController {
+
 	private static final String SERVICE_URL = "test";
-    @Autowired
-    private TicketService ticketService;
+	@Autowired
+	private TicketService ticketService;
 
-    @PostMapping(value = "/ticket", consumes = "text/turtle")
-    public ResponseEntity<?> saveTicketRdf(@RequestBody final String rdfInput) {
-        Ticket ticket = ticketService.save(rdfInput);
-        String ticketJson = ticketService.toJson(ticket);
-        ticketService.postToVdvService(ticket);
-        return ResponseEntity.status(HttpStatus.OK).body(ticketJson);
-    }
+	@PostMapping(value = "/ticket", consumes = "text/turtle")
+	public ResponseEntity<?> saveTicketRdf(@RequestBody final String rdfInput) {
+		Ticket ticket = ticketService.save(rdfInput);
+		String ticketJson = ticketService.toJson(ticket);
+		ticketService.postToVdvService(ticket);
+		return ResponseEntity.status(HttpStatus.OK).body(ticketJson);
+	}
 
-    @PostMapping(value = "/ticket", consumes = {"application/xml", "application/json"})
-    public String convertTicket(@RequestBody final String input) throws IOException {
-        String result = ticketService.convertToRdf(input);
-	InputStream rdfStream = new ByteArrayInputStream(result.getBytes("utf-8"));
-	RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
-	Model model = new LinkedHashModel();
-	parser.setRDFHandler(new StatementCollector(model));
-	parser.parse(rdfStream, SERVICE_URL);
-        // result = ticketService.postToSmartTicketService(result);
-        return result;
-    }
+	@PostMapping(value = "/ticket", consumes = {"application/xml", "application/json"})
+	public String convertTicket(@RequestBody final String input) throws IOException {
+		String result = ticketService.convertToRdf(input);
+		InputStream rdfStream = new ByteArrayInputStream(result.getBytes("utf-8"));
+		RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
+		Model model = new LinkedHashModel();
+		parser.setRDFHandler(new StatementCollector(model));
+		parser.parse(rdfStream, SERVICE_URL);
+		return result;
+	}
 }
