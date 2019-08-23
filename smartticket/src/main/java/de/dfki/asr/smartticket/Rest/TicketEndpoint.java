@@ -27,17 +27,21 @@ public class TicketEndpoint {
 	    produces = "image/png")
     @ResponseBody
     public byte[] receiveTicket(@RequestBody final Model model) {
-        BookingProcess booking = new BookingProcess();
-        booking.writeRequestToRepo(model);
-	byte[] ticketResult = null;
-        TicketWrapper ticket = new TicketWrapper(booking.getRepo());
-	    try {
-		    ticketResult = ticket.receiveTicket();
-	    } catch (IOException ex) {
-		    LOG.warn(ex.getMessage());
-	    }
-	return ticketResult;
+	return 	createTicketFromModel(model);
     }
+
+	private byte[] createTicketFromModel(final Model model) {
+		BookingProcess booking = new BookingProcess();
+		booking.writeRequestToRepo(model);
+		byte[] ticketResult = null;
+		TicketWrapper ticket = new TicketWrapper(booking.getRepo());
+		try {
+			ticketResult = ticket.receiveTicket();
+		} catch (IOException ex) {
+			LOG.warn(ex.getMessage());
+		}
+		return ticketResult;
+	}
 
     @RequestMapping(value = "/ticket",
             method = RequestMethod.POST,
