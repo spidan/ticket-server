@@ -1,12 +1,12 @@
-package com.dfki.services.dfki_ticket_service;
+package com.dfki.services.RmlMappingService;
 
 import be.ugent.rml.Executor;
 import be.ugent.rml.functions.FunctionLoader;
 import be.ugent.rml.records.RecordsFactory;
 import be.ugent.rml.store.QuadStore;
 import be.ugent.rml.store.RDF4JStore;
-import com.dfki.services.dfki_ticket_service.models.Ticket;
-import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
+import com.dfki.services.RmlMappingService.models.Ticket;
+import com.dfki.services.RmlMappingService.repositories.TicketRepo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;

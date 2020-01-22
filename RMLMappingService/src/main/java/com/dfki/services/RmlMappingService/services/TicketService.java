@@ -1,11 +1,11 @@
-package com.dfki.services.dfki_ticket_service.services;
+package com.dfki.services.RmlMappingService.services;
 
-import com.dfki.services.dfki_ticket_service.Utils;
-import com.dfki.services.dfki_ticket_service.exceptions.InvalidInputException;
-import com.dfki.services.dfki_ticket_service.exceptions.RmlMappingException;
-import com.dfki.services.dfki_ticket_service.exceptions.ServiceConnectionException;
-import com.dfki.services.dfki_ticket_service.models.Ticket;
-import com.dfki.services.dfki_ticket_service.repositories.TicketRepo;
+import com.dfki.services.RmlMappingService.Utils;
+import com.dfki.services.RmlMappingService.exceptions.InvalidInputException;
+import com.dfki.services.RmlMappingService.exceptions.RmlMappingException;
+import com.dfki.services.RmlMappingService.exceptions.ServiceConnectionException;
+import com.dfki.services.RmlMappingService.models.Ticket;
+import com.dfki.services.RmlMappingService.repositories.TicketRepo;
 import org.eclipse.rdf4j.model.Model;
 import org.springframework.stereotype.Component;
 

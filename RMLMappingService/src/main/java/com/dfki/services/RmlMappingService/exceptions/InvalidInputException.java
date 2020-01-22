@@ -1,4 +1,4 @@
-package com.dfki.services.dfki_ticket_service.exceptions;
+package com.dfki.services.RmlMappingService.exceptions;
 
 public class InvalidInputException extends RuntimeException {
     private String inputType;

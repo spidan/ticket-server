@@ -1,7 +1,7 @@
-package com.dfki.services.dfki_ticket_service.controllers;
+package com.dfki.services.RmlMappingService.controllers;
 
-import com.dfki.services.dfki_ticket_service.models.Ticket;
-import com.dfki.services.dfki_ticket_service.services.TicketService;
+import com.dfki.services.RmlMappingService.models.Ticket;
+import com.dfki.services.RmlMappingService.services.TicketService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

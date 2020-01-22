@@ -1,4 +1,4 @@
-package com.dfki.services.dfki_ticket_service.repositories;
+package com.dfki.services.RmlMappingService.repositories;
 
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.query.TupleQuery;

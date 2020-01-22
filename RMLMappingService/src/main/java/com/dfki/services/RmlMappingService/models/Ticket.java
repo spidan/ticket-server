@@ -1,4 +1,4 @@
-package com.dfki.services.dfki_ticket_service.models;
+package com.dfki.services.RmlMappingService.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

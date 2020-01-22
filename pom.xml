@@ -8,6 +8,7 @@
     <modules>
 		<module>smartticket</module>
 		<module>rmlmapper-java</module>
-		<module>dfki-ticket-service</module>
-	</modules>
+		
+        <module>RMLMappingService</module>
+    </modules>
 </project>
