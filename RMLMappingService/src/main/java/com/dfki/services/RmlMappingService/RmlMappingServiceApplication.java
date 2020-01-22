@@ -8,6 +8,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RmlMappingServiceApplication {
     public static void main(final String[] args) {
         SpringApplication.run(RmlMappingServiceApplication.class, args);
-        System.out.println("PROJECT is Running!!!");
     }
 }

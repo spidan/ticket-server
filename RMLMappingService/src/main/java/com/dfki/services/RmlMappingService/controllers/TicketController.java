@@ -43,4 +43,15 @@ public class TicketController {
 		parser.parse(rdfStream, SERVICE_URL);
 		return result;
 	}
+
+	@PostMapping(value = "/maptordf", consumes = {"application/xml", "application/json"})
+	public String mapToRdf(@RequestBody final String input) throws IOException {
+		String result = ticketService.convertToRdf(input);
+		InputStream rdfStream = new ByteArrayInputStream(result.getBytes("utf-8"));
+		RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
+		Model model = new LinkedHashModel();
+		parser.setRDFHandler(new StatementCollector(model));
+		parser.parse(rdfStream, SERVICE_URL);
+		return result;
+	}
 }
