@@ -1,4 +1,4 @@
-package com.dfki.services.RmlMappingService.services;
+package com.dfki.services.RmlMappingService.service;
 
 import com.dfki.services.RmlMappingService.Utils;
 import com.dfki.services.RmlMappingService.exceptions.InvalidInputException;
@@ -13,10 +13,10 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @Component
-public class TicketService {
+public class RmlMappingService {
     private TicketRepo ticketRepo;
 
-    public TicketService() {
+    public RmlMappingService() {
         ticketRepo = new TicketRepo();
     }
 

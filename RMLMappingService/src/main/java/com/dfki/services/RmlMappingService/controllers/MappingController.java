@@ -1,6 +1,6 @@
 package com.dfki.services.RmlMappingService.controllers;
 
-import com.dfki.services.RmlMappingService.services.TicketService;
+import com.dfki.services.RmlMappingService.service.RmlMappingService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-public class TicketController {
+public class MappingController {
 
 	private static final String SERVICE_URL = "test";
 	@Autowired
-	private TicketService ticketService;
+	private RmlMappingService mappingService;
 
 	@PostMapping(value = "/maptordf", consumes = {"application/xml", "application/json"})
 	public Model mapToRdf(@RequestBody final String input) throws IOException {
-		String result = ticketService.convertToRdf(input);
+		String result = mappingService.convertToRdf(input);
 		InputStream rdfStream = new ByteArrayInputStream(result.getBytes("utf-8"));
 		RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
 		Model model = new LinkedHashModel();
