@@ -28,8 +28,8 @@ public class MappingController {
 	@Autowired
 	private RmlMappingService mappingService;
 
-	@PostMapping(value = "/maptordf", consumes = {"application/xml", "application/json"})
-	public ResponseEntity<?> mapToRdf(@RequestBody final String input) throws IOException {
+	@PostMapping(value = "/maptordf", consumes = {"application/json"})
+	public ResponseEntity<?> mapJsonToRdf(@RequestBody final String input) throws IOException {
 		try {
 			Model result = mappingService.jsonToRdf(input);
 			OutputStream turtleOutput = modelToTtl(result);
