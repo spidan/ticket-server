@@ -68,7 +68,7 @@ public class RmlMappingService {
 			if (Utils.isValidXml(input)) {
 				return xmlToRdf(input);
 			} else if (Utils.isValidJson(input)) {
-				return jsonToRdf(input);
+				return jsonToRdf(input).toString();
 			} else {
 				throw new InvalidInputException("XML or JSON", "");
 			}
