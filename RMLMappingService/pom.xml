@@ -226,5 +226,22 @@
         </plugins>
     </reporting>
     <packaging>jar</packaging>
+		<dependency>
+			<groupId>com.taxonic.carml</groupId>
+			<artifactId>carml-engine</artifactId>
+			<version>0.2.3</version>
+		</dependency>
+
+		<!-- Choose the resolvers to suit your need -->
+		<dependency>
+			<groupId>com.taxonic.carml</groupId>
+			<artifactId>carml-logical-source-resolver-jsonpath</artifactId>
+			<version>0.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.taxonic.carml</groupId>
+			<artifactId>carml-logical-source-resolver-xpath</artifactId>
+			<version>0.2.3</version>
+		</dependency>
 
 </project>
