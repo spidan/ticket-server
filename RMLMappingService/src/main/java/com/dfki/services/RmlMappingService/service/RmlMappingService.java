@@ -48,7 +48,7 @@ public class RmlMappingService {
 		return carmlModel;
 	}
 
-	public Model mapJSONWithCarml(InputStream mappingFileStream, InputStream resourceStream) {
+	public Model mapJSONWithCarml(final InputStream mappingFileStream, final InputStream resourceStream) {
 		Set<TriplesMap> mapping
 			= RmlMappingLoader
 				.build()
