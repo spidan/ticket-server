@@ -1,7 +1,6 @@
 package com.dfki.services.RmlMappingService.service;
 
 import com.dfki.services.RmlMappingService.Utils;
-import com.dfki.services.RmlMappingService.models.Ticket;
 import com.taxonic.carml.engine.RmlMapper;
 import com.taxonic.carml.logical_source_resolver.JsonPathResolver;
 import com.taxonic.carml.logical_source_resolver.XPathResolver;
@@ -20,14 +19,6 @@ public class RmlMappingService {
 
 	public RmlMappingService() {
 
-	}
-
-	public String toJson(final Ticket ticket) {
-		return Utils.convertObjectToJson(ticket);
-	}
-
-	public String toXml(final Ticket ticket) {
-		return Utils.convertObjectToXML(ticket);
 	}
 
 	public Model xmlToRdf(final String xmlString) throws Exception {
