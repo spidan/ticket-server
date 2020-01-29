@@ -11,10 +11,13 @@
 @prefix rdfs: 	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix time: 	<http://www.w3.org/2006/time#> .
 @prefix gr:     <http://purl.org/goodrelations/v1#> .
+@prefix carml: <http://carml.taxonic.com/carml/> .
 
 rr:TransportMapping
   rml:logicalSource [
-    rml:source "json_text.json";
+    rml:source [
+    a carml:Stream ;
+   ];
     rml:referenceFormulation ql:JSONPath;
     rml:iterator "$"
   ];

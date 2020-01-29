@@ -6,18 +6,21 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix carml: <http://carml.taxonic.com/carml/> .
 
 rr:EventsMapping
   rml:logicalSource [
-    rml:source "xml_text.xml";
+    rml:source [
+     a carml:Stream ;
+    ];
     rml:referenceFormulation ql:XPath;
     rml:iterator "/Events/Exhibition" ];
 
-  rr:subjectMap [ 
+  rr:subjectMap [
     rr:template "http://example.com/ns#{@id}";
     rr:class ex:exhibition;
     ];
-  
+
   rr:predicateObjectMap [
     rr:predicate ex:venue;
     rr:objectMap [
@@ -38,7 +41,9 @@ rr:EventsMapping
 
   rr:LocationMapping
     rml:logicalSource [
-      rml:source "xml_text.xml";
+      rml:source [
+     a carml:Stream ;
+    ];
       rml:referenceFormulation ql:XPath;
       rml:iterator "/Events/Exhibition" ];
 

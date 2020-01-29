@@ -1,6 +1,6 @@
-package com.dfki.services.dfki_ticket_service.exceptions;
+package com.dfki.services.RmlMappingService.exceptions;
 
-import com.dfki.services.dfki_ticket_service.models.ErrorResponse;
+import com.dfki.services.RmlMappingService.models.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

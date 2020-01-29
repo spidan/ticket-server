@@ -14,7 +14,7 @@ public final class Utils {
 
     }
 
-    public static final String DFKI_TICKET_SERVICE_URL = "http://localhost:8801/ticket";
+    public static final String DFKI_TICKET_SERVICE_URL = "http://localhost:8801/maptordf";
 
     public static String sendPostRequest(final String url, final String data,
                                          final String[] contentTypes) throws Exception {
