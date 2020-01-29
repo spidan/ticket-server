@@ -30,18 +30,23 @@ public class MappingController {
 	public ResponseEntity<?> mapToRdf(@RequestBody final String input) throws IOException {
 		try {
 			Model result = mappingService.jsonToRdf(input);
-			OutputStream turtleOutput = new ByteArrayOutputStream();
-			RDFWriter rdfWriter = Rio.createWriter(RDFFormat.TURTLE,
-				turtleOutput);
-			rdfWriter.startRDF();
-			for (Statement st: result) {
-				rdfWriter.handleStatement(st);
-			}
-			rdfWriter.endRDF();
+			OutputStream turtleOutput = modelToTtl(result);
 			return new ResponseEntity<>(turtleOutput.toString(), HttpStatus.OK);
 		} catch (Exception ex) {
 			LOG.error("Error processing input: " + ex.toString());
 			return new ResponseEntity<>("Invalid input: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	private OutputStream modelToTtl(final Model result) throws UnsupportedRDFormatException, RDFHandlerException {
+		OutputStream turtleOutput = new ByteArrayOutputStream();
+		RDFWriter rdfWriter = Rio.createWriter(RDFFormat.TURTLE,
+			turtleOutput);
+		rdfWriter.startRDF();
+		for (Statement st: result) {
+			rdfWriter.handleStatement(st);
+		}
+		rdfWriter.endRDF();
+		return turtleOutput;
 	}
 }
