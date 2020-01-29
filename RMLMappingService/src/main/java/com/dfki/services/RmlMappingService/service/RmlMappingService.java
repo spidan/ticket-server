@@ -6,6 +6,7 @@ import com.dfki.services.RmlMappingService.exceptions.RmlMappingException;
 import com.dfki.services.RmlMappingService.models.Ticket;
 import com.taxonic.carml.engine.RmlMapper;
 import com.taxonic.carml.logical_source_resolver.JsonPathResolver;
+import com.taxonic.carml.logical_source_resolver.XPathResolver;
 import com.taxonic.carml.model.TriplesMap;
 import com.taxonic.carml.util.RmlMappingLoader;
 import com.taxonic.carml.vocab.Rdf;
@@ -31,20 +32,19 @@ public class RmlMappingService {
 		return Utils.convertObjectToXML(ticket);
 	}
 
-	public String xmlToRdf(final String xmlString) throws Exception {
+	public Model xmlToRdf(final String xmlString) throws Exception {
 		String mappingFile = "xml_mapping.ttl";
-		String fileName = "xml_text.xml";
-		Utils.writeTextToFile(fileName, xmlString);
-		return Utils.mapToRDF(mappingFile);
+		InputStream recordStream = new ByteArrayInputStream(xmlString.getBytes("utf-8"));
+		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
+		Model carmlModel = mapXMLWithCarml(mappingStream, recordStream);
+		return carmlModel;
 	}
 
 	public Model jsonToRdf(final String jsonString) throws Exception {
 		String mappingFile = "transport_mapping.ttl";
 		InputStream recordStream = new ByteArrayInputStream(jsonString.getBytes("utf-8"));
 		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
-		String fileName = "json_text.json";
 		Model carmlModel = mapJSONWithCarml(mappingStream, recordStream);
-		Utils.writeTextToFile(fileName, jsonString);
 		return carmlModel;
 	}
 
@@ -63,12 +63,27 @@ public class RmlMappingService {
 		return result;
 	}
 
-	public String convertToRdf(final String input) {
+	public Model mapXMLWithCarml(final InputStream mappingFileStream, final InputStream resourceStream) {
+		Set<TriplesMap> mapping
+			= RmlMappingLoader
+				.build()
+				.load(RDFFormat.TURTLE, mappingFileStream);
+		RmlMapper mapper
+			= RmlMapper
+				.newBuilder()
+				.setLogicalSourceResolver(Rdf.Ql.XPath, new XPathResolver())
+				.build();
+		mapper.bindInputStream(resourceStream);
+		Model result = mapper.map(mapping);
+		return result;
+	}
+
+	public Model convertToRdf(final String input) {
 		try {
 			if (Utils.isValidXml(input)) {
 				return xmlToRdf(input);
 			} else if (Utils.isValidJson(input)) {
-				return jsonToRdf(input).toString();
+				return jsonToRdf(input);
 			} else {
 				throw new InvalidInputException("XML or JSON", "");
 			}
