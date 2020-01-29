@@ -40,6 +40,18 @@ public class MappingController {
 		}
 	}
 
+	@PostMapping(value = "/maptordf", consumes = {"text/xml"})
+	public ResponseEntity<?> mapXmlToRdf(@RequestBody final String input) throws IOException {
+		try {
+			Model result = mappingService.xmlToRdf(input);
+			OutputStream turtleOutput = modelToTtl(result);
+			return new ResponseEntity<>(turtleOutput.toString(), HttpStatus.OK);
+		} catch (Exception ex) {
+			LOG.error("Error processing input: " + ex.toString());
+			return new ResponseEntity<>("Invalid input: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	private OutputStream modelToTtl(final Model result) throws UnsupportedRDFormatException, RDFHandlerException {
 		OutputStream turtleOutput = new ByteArrayOutputStream();
 		RDFWriter rdfWriter = Rio.createWriter(RDFFormat.TURTLE,
