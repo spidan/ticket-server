@@ -53,4 +53,19 @@ public class RmlMappingService {
         }
 
     }
+	public Model mapJSONWithCarml(InputStream mappingFileStream, InputStream resourceStream) {
+		Set<TriplesMap> mapping
+			= RmlMappingLoader
+				.build()
+				.load(RDFFormat.TURTLE, mappingFileStream);
+		RmlMapper mapper
+			= RmlMapper
+				.newBuilder()
+				.setLogicalSourceResolver(Rdf.Ql.JsonPath, new JsonPathResolver())
+				.build();
+		mapper.bindInputStream(resourceStream);
+		Model result = mapper.map(mapping);
+		return result;
+	}
+
 }
