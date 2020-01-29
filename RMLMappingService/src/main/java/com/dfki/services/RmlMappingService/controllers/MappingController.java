@@ -1,16 +1,18 @@
 package com.dfki.services.RmlMappingService.controllers;
 
 import com.dfki.services.RmlMappingService.service.RmlMappingService;
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.rio.RDFParser;
+import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
-import org.eclipse.rdf4j.rio.helpers.StatementCollector;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,18 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class MappingController {
 
-	private static final String SERVICE_URL = "test";
+	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MappingController.class);
+	private static final String BASE_URI = "http://SmartMaaS.eu/ticketservice";
+
 	@Autowired
 	private RmlMappingService mappingService;
 
 	@PostMapping(value = "/maptordf", consumes = {"application/xml", "application/json"})
-	public Model mapToRdf(@RequestBody final String input) throws IOException {
-		String result = mappingService.convertToRdf(input);
-		InputStream rdfStream = new ByteArrayInputStream(result.getBytes("utf-8"));
-		RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
-		Model model = new LinkedHashModel();
-		parser.setRDFHandler(new StatementCollector(model));
-		parser.parse(rdfStream, SERVICE_URL);
-		return model;
+	public ResponseEntity<?> mapToRdf(@RequestBody final String input) throws IOException {
+		try {
+			Model result = mappingService.jsonToRdf(input);
+			OutputStream turtleOutput = new ByteArrayOutputStream();
+			RDFWriter rdfWriter = Rio.createWriter(RDFFormat.TURTLE,
+				turtleOutput);
+			rdfWriter.startRDF();
+			for (Statement st: result) {
+				rdfWriter.handleStatement(st);
+			}
+			rdfWriter.endRDF();
+			return new ResponseEntity<>(turtleOutput.toString(), HttpStatus.OK);
+		} catch (Exception ex) {
+			LOG.error("Error processing input: " + ex.toString());
+			return new ResponseEntity<>("Invalid input: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 }
