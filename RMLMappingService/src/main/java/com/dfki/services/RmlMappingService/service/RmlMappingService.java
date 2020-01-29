@@ -9,6 +9,7 @@ import com.taxonic.carml.logical_source_resolver.JsonPathResolver;
 import com.taxonic.carml.model.TriplesMap;
 import com.taxonic.carml.util.RmlMappingLoader;
 import com.taxonic.carml.vocab.Rdf;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Set;
 import org.eclipse.rdf4j.model.Model;
@@ -37,11 +38,14 @@ public class RmlMappingService {
 		return Utils.mapToRDF(mappingFile);
 	}
 
-	public String jsonToRdf(final String jsonString) throws Exception {
+	public Model jsonToRdf(final String jsonString) throws Exception {
 		String mappingFile = "transport_mapping.ttl";
+		InputStream recordStream = new ByteArrayInputStream(jsonString.getBytes("utf-8"));
+		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
 		String fileName = "json_text.json";
+		Model carmlModel = mapJSONWithCarml(mappingStream, recordStream);
 		Utils.writeTextToFile(fileName, jsonString);
-		return Utils.mapToRDF(mappingFile);
+		return carmlModel;
 	}
 
 	public Model mapJSONWithCarml(InputStream mappingFileStream, InputStream resourceStream) {
