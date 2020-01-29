@@ -1,8 +1,6 @@
 package com.dfki.services.RmlMappingService.service;
 
 import com.dfki.services.RmlMappingService.Utils;
-import com.dfki.services.RmlMappingService.exceptions.InvalidInputException;
-import com.dfki.services.RmlMappingService.exceptions.RmlMappingException;
 import com.dfki.services.RmlMappingService.models.Ticket;
 import com.taxonic.carml.engine.RmlMapper;
 import com.taxonic.carml.logical_source_resolver.JsonPathResolver;
@@ -33,6 +31,9 @@ public class RmlMappingService {
 	}
 
 	public Model xmlToRdf(final String xmlString) throws Exception {
+		if (!Utils.isValidXml(xmlString)) {
+			throw new IllegalArgumentException("Input was no valid XML");
+		}
 		String mappingFile = "xml_mapping.ttl";
 		InputStream recordStream = new ByteArrayInputStream(xmlString.getBytes("utf-8"));
 		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
@@ -41,6 +42,9 @@ public class RmlMappingService {
 	}
 
 	public Model jsonToRdf(final String jsonString) throws Exception {
+		if (!Utils.isValidJson(jsonString)) {
+			throw new IllegalArgumentException("Input was no valid JSON");
+		}
 		String mappingFile = "transport_mapping.ttl";
 		InputStream recordStream = new ByteArrayInputStream(jsonString.getBytes("utf-8"));
 		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
@@ -76,23 +80,5 @@ public class RmlMappingService {
 		mapper.bindInputStream(resourceStream);
 		Model result = mapper.map(mapping);
 		return result;
-	}
-
-	public Model convertToRdf(final String input) {
-		try {
-			if (Utils.isValidXml(input)) {
-				return xmlToRdf(input);
-			} else if (Utils.isValidJson(input)) {
-				return jsonToRdf(input);
-			} else {
-				throw new InvalidInputException("XML or JSON", "");
-			}
-		} catch (InvalidInputException e) {
-			throw e;
-		} catch (Error | Exception e) {
-			e.printStackTrace();
-			throw new RmlMappingException(e.getMessage());
-		}
-
 	}
 }
