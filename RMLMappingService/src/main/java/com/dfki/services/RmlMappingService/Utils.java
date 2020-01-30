@@ -1,25 +1,15 @@
 package com.dfki.services.RmlMappingService;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.rdf4j.model.*;
-import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.rio.Rio;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -36,63 +26,6 @@ public final class Utils {
 
 	public static final String TURTLE_MEDIA_TYPE = "text/turtle";
 
-	private static final String WORKING_DIRECTORY
-		= new File(Utils.class.getResource("/application.properties").getFile())
-				.getParentFile()
-				.getAbsolutePath();
-
-	public static Model turtleToRDFConverter(final String input) throws IOException {
-		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-		return Rio.parse(inputStream, "", RDFFormat.TURTLE);
-	}
-
-	public static String convertFromWithUrlToWithoutUrl(final String prefix, final String value) {
-		if (value.contains("#")) {
-			return prefix + ":" + value.substring(value.indexOf("#") + 1);
-		}
-		return prefix + ":" + value;
-	}
-
-	public static String convertObjectToJson(final Object object) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode jsonNode = objectMapper.convertValue(object, JsonNode.class);
-
-		return jsonNode.toString().replaceAll(",", ",\n");
-
-	}
-
-	public static String convertObjectToXML(final Object object) {
-		String xmlResult = null;
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			StringWriter stringWriter = new StringWriter();
-			marshaller.marshal(object, stringWriter);
-			xmlResult = stringWriter.toString();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return xmlResult;
-	}
-
-	public static Map<String, String> parsePrefixes(final String rdfInput) {
-		final String prefixTitle = "@prefix ";
-		Map<String, String> prefixes = new HashMap<>();
-		while (rdfInput.contains(prefixTitle)) {
-			int prefixIndex = rdfInput.indexOf(prefixTitle) + prefixTitle.length();
-			int semicolonIndex = rdfInput.indexOf(":");
-			int endOfLineIndex = rdfInput.indexOf("> .");
-			String prefixValue = rdfInput.substring(prefixIndex, semicolonIndex);
-			String url = rdfInput.substring(semicolonIndex, endOfLineIndex);
-			url = url.substring(url.indexOf("<") + 1);
-			prefixes.put(prefixValue, url);
-		}
-		return prefixes;
-	}
-
 	public static boolean isValidXml(final String xml) {
 		try {
 			SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -104,7 +37,6 @@ public final class Utils {
 		return true;
 
 	}
-
 	public static boolean isValidJson(final String json) {
 		try {
 			new JSONObject(json);
