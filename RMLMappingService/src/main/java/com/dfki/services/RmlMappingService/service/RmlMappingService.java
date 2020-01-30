@@ -17,28 +17,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class RmlMappingService {
 
+	private static final String MAPPING_FILE_SERVER = "Http://localhost:8801/mappingfile";
+	private static final String XML_MAPPING_FILE = "xml_mapping.ttl";
+	private static final String JSON_MAPPING_FILE = "transport_mapping.ttl";
+
 	public RmlMappingService() {
 
 	}
 
-	public Model xmlToRdf(final String xmlString) throws Exception {
+	public Model xmlToRdf(final String xmlString, final String mappingFileName) throws Exception {
 		if (!Utils.isValidXml(xmlString)) {
 			throw new IllegalArgumentException("Input was no valid XML");
 		}
-		String mappingFile = "xml_mapping.ttl";
+		String mappingFile = Utils.sendGetRequest(MAPPING_FILE_SERVER
+								.concat("?filename=")
+								.concat(mappingFileName));
 		InputStream recordStream = new ByteArrayInputStream(xmlString.getBytes("utf-8"));
-		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
+		InputStream mappingStream = new ByteArrayInputStream(mappingFile.getBytes("utf-8"));
 		Model carmlModel = mapXMLWithCarml(mappingStream, recordStream);
 		return carmlModel;
 	}
 
-	public Model jsonToRdf(final String jsonString) throws Exception {
+	public Model jsonToRdf(final String jsonString, final String mappingFileName) throws Exception {
 		if (!Utils.isValidJson(jsonString)) {
 			throw new IllegalArgumentException("Input was no valid JSON");
 		}
-		String mappingFile = "transport_mapping.ttl";
+		String mappingFile = Utils.sendGetRequest(MAPPING_FILE_SERVER
+								.concat("?filename=")
+								.concat(mappingFileName));
 		InputStream recordStream = new ByteArrayInputStream(jsonString.getBytes("utf-8"));
-		InputStream mappingStream = ClassLoader.getSystemResourceAsStream(mappingFile);
+		InputStream mappingStream = new ByteArrayInputStream(mappingFile.getBytes("utf-8"));
 		Model carmlModel = mapJSONWithCarml(mappingStream, recordStream);
 		return carmlModel;
 	}
