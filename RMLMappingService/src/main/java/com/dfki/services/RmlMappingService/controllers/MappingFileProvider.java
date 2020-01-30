@@ -24,7 +24,7 @@ public class MappingFileProvider {
 
 	@GetMapping(value = "/mappingfile", produces = {"text/turtle"})
 	public ResponseEntity<?> getMappingFile(@RequestParam final String filename) {
-		File mappingFile = new File(getTargetDir().concat(filename));
+		File mappingFile = new File(getMappingFileDir().concat(filename));
 		try (InputStream mappingStream = new FileInputStream(mappingFile)) {
 			return new ResponseEntity<>(IOUtils.toString(mappingStream), HttpStatus.OK);
 		} catch (FileNotFoundException ex) {
@@ -52,9 +52,9 @@ public class MappingFileProvider {
 		}
 	}
 
-	private String getTargetDir() {
+	private String getMappingFileDir() {
 		String workingDirPath = System.getProperty("user.dir");
-		String targetDirPath = workingDirPath.concat("/target/");
+		String targetDirPath = workingDirPath.concat("/mappingfiles/");
 		return targetDirPath;
 	}
 }
