@@ -1,10 +1,5 @@
 package com.dfki.services.RmlMappingService;
 
-import be.ugent.rml.Executor;
-import be.ugent.rml.functions.FunctionLoader;
-import be.ugent.rml.records.RecordsFactory;
-import be.ugent.rml.store.QuadStore;
-import be.ugent.rml.store.RDF4JStore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.rdf4j.model.*;
@@ -23,10 +18,6 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.HttpEntity;
@@ -125,60 +116,6 @@ public final class Utils {
 			}
 		}
 		return true;
-	}
-
-	public static void writeTextToFile(final String fileName, final String text) {
-		try {
-			File file = new File(WORKING_DIRECTORY + "/" + fileName);
-
-			Path path = Paths.get(file.getPath());
-			Files.write(path, Collections.singleton(text), Charset.forName("UTF-8"));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static String mapToRDF(final String mappingFileName) throws Exception {
-		String outputFilePath = WORKING_DIRECTORY + "/output.ttl";
-		String mappingFile = WORKING_DIRECTORY + "/" + mappingFileName;
-
-		InputStream mappingStream = new FileInputStream(mappingFile);
-		Model model = Rio.parse(mappingStream, "", RDFFormat.TURTLE);
-		RDF4JStore rmlStore = new RDF4JStore(model);
-
-		FunctionLoader functionLoader = new FunctionLoader(null, null, new HashMap<>());
-
-		RDF4JStore outputStore = new RDF4JStore();
-
-		Executor executor = new Executor(rmlStore, new RecordsFactory(WORKING_DIRECTORY),
-			functionLoader, outputStore,
-			be.ugent.rml.Utils.getBaseDirectiveTurtle(mappingStream));
-
-		QuadStore result = executor.execute(executor.getTriplesMaps());
-		result.removeDuplicates();
-		result.setNamespaces(rmlStore.getNamespaces());
-
-		Writer fileWriter = new OutputStreamWriter(new FileOutputStream(outputFilePath),
-					StandardCharsets.UTF_8);
-		try {
-			result.write(fileWriter, "turtle");
-		} catch (Throwable throwable) {
-			try {
-				fileWriter.close();
-			} catch (IOException ioEx) {
-				if (throwable != ioEx) {
-					throwable.addSuppressed(ioEx);
-				}
-			}
-			throw throwable;
-		} finally {
-			fileWriter.close();
-		}
-
-		Path outputPath = Paths.get(outputFilePath);
-		byte[] encoded = Files.readAllBytes(outputPath);
-		return new String(encoded, Charset.defaultCharset());
 	}
 
 	@SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
