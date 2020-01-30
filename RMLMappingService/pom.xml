@@ -11,7 +11,7 @@
 	<artifactId>RMLMappingService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RMLMappingService</name>
-	<description>Spring Boot project for DFKI_Ticket_Service</description>
+	<description>Spring Boot project for RML Mapping Service</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
