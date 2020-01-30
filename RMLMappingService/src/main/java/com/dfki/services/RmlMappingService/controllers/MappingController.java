@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
@@ -29,9 +30,10 @@ public class MappingController {
 	private RmlMappingService mappingService;
 
 	@PostMapping(value = "/maptordf", consumes = {"application/json"})
-	public ResponseEntity<?> mapJsonToRdf(@RequestBody final String input) throws IOException {
+	public ResponseEntity<?> mapJsonToRdf(@RequestParam final String mappingFile,
+						@RequestBody final String input) throws IOException {
 		try {
-			Model result = mappingService.jsonToRdf(input);
+			Model result = mappingService.jsonToRdf(input, mappingFile);
 			OutputStream turtleOutput = modelToTtl(result);
 			return new ResponseEntity<>(turtleOutput.toString(), HttpStatus.OK);
 		} catch (Exception ex) {
@@ -41,9 +43,10 @@ public class MappingController {
 	}
 
 	@PostMapping(value = "/maptordf", consumes = {"text/xml"})
-	public ResponseEntity<?> mapXmlToRdf(@RequestBody final String input) throws IOException {
+	public ResponseEntity<?> mapXmlToRdf(@RequestParam final String mappingFile,
+						@RequestBody final String input) throws IOException {
 		try {
-			Model result = mappingService.xmlToRdf(input);
+			Model result = mappingService.xmlToRdf(input, mappingFile);
 			OutputStream turtleOutput = modelToTtl(result);
 			return new ResponseEntity<>(turtleOutput.toString(), HttpStatus.OK);
 		} catch (Exception ex) {
