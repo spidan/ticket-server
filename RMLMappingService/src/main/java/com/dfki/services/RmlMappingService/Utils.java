@@ -46,7 +46,9 @@ public final class Utils {
 	public static final String TURTLE_MEDIA_TYPE = "text/turtle";
 
 	private static final String WORKING_DIRECTORY
-		= new File(Utils.class.getResource("/application.properties").getFile()).getParentFile().getAbsolutePath();
+		= new File(Utils.class.getResource("/application.properties").getFile())
+				.getParentFile()
+				.getAbsolutePath();
 
 	public static Model turtleToRDFConverter(final String input) throws IOException {
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
@@ -157,7 +159,8 @@ public final class Utils {
 		result.removeDuplicates();
 		result.setNamespaces(rmlStore.getNamespaces());
 
-		Writer fileWriter = new OutputStreamWriter(new FileOutputStream(outputFilePath), StandardCharsets.UTF_8);
+		Writer fileWriter = new OutputStreamWriter(new FileOutputStream(outputFilePath),
+					StandardCharsets.UTF_8);
 		try {
 			result.write(fileWriter, "turtle");
 		} catch (Throwable throwable) {
@@ -184,7 +187,7 @@ public final class Utils {
 		HttpGet request = new HttpGet(uri);
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		request.addHeader("Accept", "text/turtle");
-		try ( CloseableHttpResponse response = httpClient.execute(request)) {
+		try (CloseableHttpResponse response = httpClient.execute(request)) {
 			HttpEntity entity = response.getEntity();
 			String result = EntityUtils.toString(entity);
 			return result;
