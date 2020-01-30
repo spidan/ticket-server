@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,7 @@ public class MappingFileProvider {
 
 	@GetMapping(value = "/mappingfile", produces = {"text/turtle"})
 	public ResponseEntity<?> getMappingFile(@RequestParam final String filename) {
-		File mappingFile = new File(getTargetDir().concat(filename));
+		File mappingFile = new File(getMappingFileDir().concat(filename));
 		try (InputStream mappingStream = new FileInputStream(mappingFile)) {
 			return new ResponseEntity<>(IOUtils.toString(mappingStream), HttpStatus.OK);
 		} catch (FileNotFoundException ex) {
@@ -38,7 +40,13 @@ public class MappingFileProvider {
 	@PostMapping(value = "/mappingfile", consumes = {"text/turtle"})
 	public ResponseEntity<?> postMappingFile(@RequestBody final String mapping,
 						@RequestParam final String filename) {
-		File mappingFile = new File(getTargetDir().concat(filename));
+		File mappingFile = new File(getMappingFileDir().concat(filename));
+		if (!mappingFile.getParentFile().mkdirs()) {
+			if (!Files.exists(Paths.get(getMappingFileDir()))) {
+				return new ResponseEntity<>("Could not create mapping file folder",
+								HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 		try (OutputStream outStream = new FileOutputStream(mappingFile)) {
 			outStream.write(mapping.getBytes("utf-8"));
 			return new ResponseEntity<>("Worked", HttpStatus.OK);
@@ -52,9 +60,9 @@ public class MappingFileProvider {
 		}
 	}
 
-	private String getTargetDir() {
+	private String getMappingFileDir() {
 		String workingDirPath = System.getProperty("user.dir");
-		String targetDirPath = workingDirPath.concat("/target/");
+		String targetDirPath = workingDirPath.concat("/mappingfiles/");
 		return targetDirPath;
 	}
 }
