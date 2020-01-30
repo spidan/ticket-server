@@ -7,8 +7,6 @@
     <name>SmartMaas Ticket Services</name>
     <modules>
 		<module>smartticket</module>
-		<module>rmlmapper-java</module>
-		
         <module>RMLMappingService</module>
     </modules>
 </project>
