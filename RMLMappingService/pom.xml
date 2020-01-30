@@ -88,11 +88,6 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>be.ugent.rml</groupId>
-			<artifactId>rmlmapper</artifactId>
-			<version>4.4.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.rdf4j</groupId>
 			<artifactId>rdf4j-rio-api</artifactId>
 			<version>3.0.0-M2</version>
