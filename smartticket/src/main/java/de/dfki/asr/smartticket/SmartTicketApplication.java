@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 @SpringBootApplication
 public class SmartTicketApplication {
-	public static void main(final String[] args) {
-		SpringApplication.run(SmartTicketApplication.class, args);
+
+    public static void main(final String[] args) {
+	SpringApplication.run(SmartTicketApplication.class, args);
     }
 }
