@@ -31,4 +31,16 @@ public class RegistryEndpoint {
 	return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/serviceTemplate",
+		method = RequestMethod.GET)
+    public ResponseEntity<?> getTemplateForService(@RequestParam final URI serviceUri) {
+	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
+	try {
+	    URI templateUri = registry.getTemplate(serviceUri);
+	    return new ResponseEntity<>(templateUri.toString(), HttpStatus.OK);
+	} catch (Exception ex) {
+	    return new ResponseEntity<>("Could not register mapping: " + ex.getMessage(),
+		    HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+    }
 }
