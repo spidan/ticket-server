@@ -16,11 +16,14 @@ import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -34,28 +37,32 @@ public class TicketEndpoint {
 		consumes = "text/turtle",
 		produces = "image/png")
 	@ResponseBody
-	public byte[] receiveTicket(@RequestBody final Model model) {
-		return createTicketFromModel(model);
+	public ResponseEntity<?> receiveTicket(@RequestParam final String targetService,
+				@RequestBody final Model model) {
+		return createTicketFromModel(model, targetService);
 	}
 
-	private byte[] createTicketFromModel(final Model model) {
+	private ResponseEntity<?> createTicketFromModel(final Model model, final String targetService) {
 		BookingProcess booking = new BookingProcess();
 		booking.writeRequestToRepo(model);
 		byte[] ticketResult = null;
 		TicketWrapper ticket = new TicketWrapper(booking.getRepo());
 		try {
-			ticketResult = ticket.receiveTicket();
+			ticketResult = ticket.receiveTicket(targetService);
 		} catch (IOException ex) {
-			LOG.warn(ex.getMessage());
+		    LOG.error("Error contacting target service: " + ex.getMessage());
+		    return new ResponseEntity<>("Error contacting target service: " + ex.getMessage(),
+				    HttpStatus.BAD_GATEWAY);
 		}
-		return ticketResult;
+		return new ResponseEntity<>(ticketResult, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/ticket",
 		method = RequestMethod.POST,
 		consumes = {"application/xml", "application/json"})
 	@ResponseBody
-	public byte[] receiveXmlOrJsonTicket(@RequestBody final String input)
+	public ResponseEntity<?> receiveXmlOrJsonTicket(@RequestParam final String targetService,
+							    @RequestBody final String input)
 		throws UnsupportedEncodingException, IOException {
 		String response = "";
 		try {
@@ -71,6 +78,6 @@ public class TicketEndpoint {
 		Model model = new LinkedHashModel();
 		parser.setRDFHandler(new StatementCollector(model));
 		parser.parse(rdfStream, SERVICE_URL);
-		return createTicketFromModel(model);
+		return createTicketFromModel(model, targetService);
 	}
 }

@@ -19,10 +19,10 @@ public class TicketWrapper {
 		this.repo = processRepo;
 	}
 
-	public byte[] receiveTicket() throws IOException {
+	public byte[] receiveTicket(final String targetServerUri) throws IOException {
 		TicketConfiguration config = new TicketConfiguration();
 		config.getData(repo);
-		Request ticketRequest = new Request(config);
+		Request ticketRequest = new Request(config, targetServerUri);
 		HttpResponse response = ticketRequest.send();
 		ByteArrayOutputStream ticketOutputStream = new ByteArrayOutputStream();
 		response.getEntity().getContent().transferTo(ticketOutputStream);

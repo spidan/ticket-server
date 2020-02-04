@@ -14,16 +14,17 @@ import java.io.IOException;
 
 public class Request {
 
-	private static final String TICKET_URL = "http://localhost:8083/ticket";
+	private String ticketUrl = "http://localhost:8083/ticket";
 	private final TicketConfiguration configuration;
 
-	public Request(final TicketConfiguration config) {
+	public Request(final TicketConfiguration config, final String targetServerUri) {
+		this.ticketUrl = targetServerUri;
 		this.configuration = config;
 	}
 
 	public HttpResponse send() throws JsonProcessingException, IOException {
 		CloseableHttpClient client = HttpClients.createDefault();
-		HttpPost postRequest = new HttpPost(TICKET_URL);
+		HttpPost postRequest = new HttpPost(ticketUrl);
 		ObjectMapper mapper = new ObjectMapper();
 		String configAsString = mapper.writeValueAsString(configuration);
 		HttpEntity entity = new StringEntity(configAsString, ContentType.APPLICATION_JSON);
