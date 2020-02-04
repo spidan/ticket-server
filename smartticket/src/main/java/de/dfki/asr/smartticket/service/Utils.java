@@ -28,14 +28,10 @@ public final class Utils {
         }
 
         CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost);
-//        int responseCode = closeableHttpResponse.getStatusLine().getStatusCode();
         String responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), Charset.defaultCharset());
         closeableHttpClient.close();
         closeableHttpResponse.close();
 
-//        if (responseCode != HttpStatus.OK.value()) {
-//            throw new Exception("Response code: " + responseCode + "\n" + responseString);
-//        }
 
         return responseString;
     }
