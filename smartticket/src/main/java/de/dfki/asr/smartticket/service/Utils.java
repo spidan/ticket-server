@@ -22,7 +22,7 @@ public final class Utils {
     public static String sendPostRequest(final String url, final String data,
 	    final String[] contentTypes) throws Exception {
 	String responseString;
-	try ( CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+	try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
 	    HttpPost httpPost = new HttpPost(url);
 	    StringEntity stringEntity = new StringEntity(data);
 	    httpPost.setEntity(stringEntity);
@@ -30,7 +30,7 @@ public final class Utils {
 		httpPost.setHeader("Accept", contentType);
 		httpPost.setHeader("Content-type", contentType);
 	    }
-	    try ( CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost)) {
+	    try (CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost)) {
 		responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), Charset.defaultCharset());
 	    }
 	}
