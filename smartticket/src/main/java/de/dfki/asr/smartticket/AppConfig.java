@@ -11,7 +11,7 @@ public class AppConfig {
 
     @Bean
     public HttpMessageConverters customConverters() {
-        HttpMessageConverter rdfConverter = new RDFMessageConverter<>();
-        return new HttpMessageConverters(rdfConverter);
+	HttpMessageConverter rdfConverter = new RDFMessageConverter<>();
+	return new HttpMessageConverters(rdfConverter);
     }
 }

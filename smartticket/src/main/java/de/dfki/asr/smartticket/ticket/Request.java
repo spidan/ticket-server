@@ -14,22 +14,23 @@ import java.io.IOException;
 
 public class Request {
 
-	private static final String TICKET_URL = "http://localhost:8083/ticket";
-	private final TicketConfiguration configuration;
+    private String ticketUrl = "http://localhost:8083/ticket";
+    private final TicketConfiguration configuration;
 
-	public Request(final TicketConfiguration config) {
-		this.configuration = config;
-	}
+    public Request(final TicketConfiguration config, final String targetServerUri) {
+	this.ticketUrl = targetServerUri;
+	this.configuration = config;
+    }
 
-	public HttpResponse send() throws JsonProcessingException, IOException {
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpPost postRequest = new HttpPost(TICKET_URL);
-		ObjectMapper mapper = new ObjectMapper();
-		String configAsString = mapper.writeValueAsString(configuration);
-		HttpEntity entity = new StringEntity(configAsString, ContentType.APPLICATION_JSON);
-		postRequest.addHeader("Content-Type", "application/json");
-		postRequest.addHeader("Authorization-Key", "46fd1c14-a985-4053-bc22-708f45b7d971");
-		postRequest.setEntity(entity);
-		return client.execute(postRequest);
-	}
+    public HttpResponse send() throws JsonProcessingException, IOException {
+	CloseableHttpClient client = HttpClients.createDefault();
+	HttpPost postRequest = new HttpPost(ticketUrl);
+	ObjectMapper mapper = new ObjectMapper();
+	String configAsString = mapper.writeValueAsString(configuration);
+	HttpEntity entity = new StringEntity(configAsString, ContentType.APPLICATION_JSON);
+	postRequest.addHeader("Content-Type", "application/json");
+	postRequest.addHeader("Authorization-Key", "46fd1c14-a985-4053-bc22-708f45b7d971");
+	postRequest.setEntity(entity);
+	return client.execute(postRequest);
+    }
 }
