@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class TicketWrapper {
 
@@ -19,8 +21,8 @@ public class TicketWrapper {
 	this.repo = processRepo;
     }
 
-    public byte[] receiveTicket(final String targetServerUri) throws IOException {
-	TicketConfiguration config = new TicketConfiguration();
+    public byte[] receiveTicket(final String targetServerUri) throws IOException, URISyntaxException, Exception {
+	TicketConfiguration config = new TicketConfiguration(new URI(targetServerUri));
 	config.getData(repo);
 	Request ticketRequest = new Request(config, targetServerUri);
 	HttpResponse response = ticketRequest.send();
