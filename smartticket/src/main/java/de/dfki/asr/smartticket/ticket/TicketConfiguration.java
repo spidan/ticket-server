@@ -19,6 +19,7 @@ public class TicketConfiguration {
     private static final String NAME = "Dummyticket zum Servicetesten";
     private static final String IATA = "aktuell ignoriertes Feld";
 
+    private final byte[] template;
 
     @Autowired
     private ApplicationContext context;
@@ -39,6 +40,9 @@ public class TicketConfiguration {
     @Setter
     private String iata;
 
+    public TicketConfiguration(URI serviceUri) throws UnsupportedEncodingException, Exception {
+	this.template = getTemplateForService(serviceUri);
+    }
 
     private byte[] getTemplateForService(URI serviceUri) throws UnsupportedEncodingException, Exception {
 	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
