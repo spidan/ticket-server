@@ -39,7 +39,7 @@ public class RegistryEndpoint {
 	    URI templateUri = registry.getTemplate(serviceUri);
 	    return new ResponseEntity<>(templateUri.toString(), HttpStatus.OK);
 	} catch (Exception ex) {
-	    return new ResponseEntity<>("Could not register mapping: " + ex.getMessage(),
+	    return new ResponseEntity<>("Could not get mapping: " + ex.getMessage(),
 		    HttpStatus.INTERNAL_SERVER_ERROR);
 	}
     }
