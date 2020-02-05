@@ -16,6 +16,7 @@ import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,9 @@ public class TicketEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(TicketEndpoint.class);
     private static final String SERVICE_URL = "test";
+
+    @Autowired
+    private TicketWrapper ticket;
 
     @RequestMapping(value = "/ticket",
 	    method = RequestMethod.POST,
@@ -51,7 +55,7 @@ public class TicketEndpoint {
 	BookingProcess booking = new BookingProcess();
 	booking.writeRequestToRepo(model);
 	byte[] ticketResult = null;
-	TicketWrapper ticket = new TicketWrapper(booking.getRepo());
+	ticket.setRepo(booking.getRepo());
 	try {
 	    ticketResult = ticket.receiveTicket(targetService);
 	} catch (IOException ex) {

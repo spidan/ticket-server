@@ -7,11 +7,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class TicketConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(TicketConfiguration.class);
@@ -19,7 +22,7 @@ public class TicketConfiguration {
     private static final String NAME = "Dummyticket zum Servicetesten";
     private static final String IATA = "aktuell ignoriertes Feld";
 
-    private final byte[] template;
+    private byte[] template;
 
     @Autowired
     private ApplicationContext context;
@@ -40,15 +43,16 @@ public class TicketConfiguration {
     @Setter
     private String iata;
 
-    public TicketConfiguration(URI serviceUri) throws UnsupportedEncodingException, Exception {
-	this.template = getTemplateForService(serviceUri);
+    public TicketConfiguration() {
+
     }
 
-    private byte[] getTemplateForService(URI serviceUri) throws UnsupportedEncodingException, Exception {
+    public void getTemplateForService(final URI serviceUri) throws UnsupportedEncodingException, Exception {
 	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
 	URI templateUri = registry.getTemplate(serviceUri);
-	Utils.sendGetRequest(templateUri.toString());
-	return "this is not a template".getBytes("utf-8");
+	this.template = Utils.sendGetRequest(templateUri.toString()).getBytes("utf-8");
+	JSONObject tAsJson = new JSONObject(new String(this.template, "utf-8"));
+	LOG.debug(tAsJson.toString());
     }
 
     public void getData(final InMemoryRepo repo) {
