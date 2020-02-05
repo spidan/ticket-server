@@ -1,10 +1,16 @@
 package de.dfki.asr.smartticket.ticket;
 
 import de.dfki.asr.smartticket.data.InMemoryRepo;
+import de.dfki.asr.smartticket.service.TemplateRegistry;
+import de.dfki.asr.smartticket.service.Utils;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class TicketConfiguration {
 
@@ -12,6 +18,10 @@ public class TicketConfiguration {
     private static final String API_TOKEN = "TICKET_API_TOKEN_3_STRING";
     private static final String NAME = "Dummyticket zum Servicetesten";
     private static final String IATA = "aktuell ignoriertes Feld";
+
+
+    @Autowired
+    private ApplicationContext context;
 
     @Getter
     @Setter
@@ -28,6 +38,14 @@ public class TicketConfiguration {
     @Getter
     @Setter
     private String iata;
+
+
+    private byte[] getTemplateForService(URI serviceUri) throws UnsupportedEncodingException, Exception {
+	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
+	URI templateUri = registry.getTemplate(serviceUri);
+	Utils.sendGetRequest(templateUri.toString());
+	return "this is not a template".getBytes("utf-8");
+    }
 
     public void getData(final InMemoryRepo repo) {
 	begin = repo.getValue("validFrom");
