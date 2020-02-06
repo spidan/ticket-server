@@ -43,6 +43,10 @@ public class TicketConfiguration {
     @Setter
     private String iata;
 
+    @Getter
+    @Setter
+    private Object requestObject;
+
     public TicketConfiguration() {
 
     }
@@ -55,12 +59,27 @@ public class TicketConfiguration {
 	LOG.debug(tAsJson.toString());
     }
 
-    public void getData(final InMemoryRepo repo) {
+    public void getData(final InMemoryRepo repo) throws UnsupportedEncodingException {
+	processJSONTemplate(repo);
 	begin = repo.getValue("validFrom");
 	end = repo.getValue("validThrough");
 	apiToken = API_TOKEN;
 	name = NAME;
 	iata = IATA;
+    }
+
+    private void processJSONTemplate(final InMemoryRepo repo) throws UnsupportedEncodingException {
+	String templateAsString = new String(this.template, "utf-8");
+	JSONObject tAsJson = new JSONObject(templateAsString);
+	tAsJson.keys().forEachRemaining(key -> {
+	    Object value = tAsJson.get(key);
+	    if (value instanceof String) {
+		value = replaceTemplatedValue(repo, (String) value);
+		tAsJson.put(key, value);
+	    }
+	});
+	this.requestObject = tAsJson;
+	LOG.debug(tAsJson.toString());
     }
 
     private String replaceTemplatedValue(final InMemoryRepo repo, final String value) {
