@@ -9,20 +9,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TicketWrapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);
-    private final InMemoryRepo repo;
+    @Autowired
+    private TicketConfiguration ticketConfig;
 
-    public TicketWrapper(final InMemoryRepo processRepo) {
-	this.repo = processRepo;
+    private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);
+    @Getter @Setter
+    private InMemoryRepo repo;
+
+    public TicketWrapper() {
     }
 
-    public byte[] receiveTicket(final String targetServerUri) throws IOException {
-	TicketConfiguration config = new TicketConfiguration();
-	config.getData(repo);
-	Request ticketRequest = new Request(config, targetServerUri);
+    public byte[] receiveTicket(final String targetServerUri) throws IOException, URISyntaxException, Exception {
+	ticketConfig.getTemplateForService(new URI(targetServerUri));
+	ticketConfig.getData(repo);
+	Request ticketRequest = new Request(ticketConfig, targetServerUri);
 	HttpResponse response = ticketRequest.send();
 	ByteArrayOutputStream ticketOutputStream = new ByteArrayOutputStream();
 	response.getEntity().getContent().transferTo(ticketOutputStream);

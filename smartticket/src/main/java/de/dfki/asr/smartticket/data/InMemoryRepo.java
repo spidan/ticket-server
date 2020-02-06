@@ -46,7 +46,7 @@ public class InMemoryRepo {
 	try {
 	    String queryString = "prefix sm: <http://www.smartmaas.de/sm-ns#> "
 		    + "prefix gr: 	<http://purl.org/goodrelations/v1#> "
-		    + "SELECT ?p WHERE {?o gr:" + property + " ?p. "
+		    + "SELECT ?p WHERE {?o " + property + " ?p. "
 		    + "			?o a gr:offering . }";
 	    TupleQuery query = repo.getConnection().prepareTupleQuery(queryString);
 	    TupleQueryResult result = query.evaluate();

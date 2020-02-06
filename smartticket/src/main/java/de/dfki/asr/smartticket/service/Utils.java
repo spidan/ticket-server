@@ -7,6 +7,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import java.nio.charset.Charset;
+import org.apache.http.client.methods.HttpGet;
 import org.graalvm.compiler.core.common.SuppressFBWarnings;
 
 public final class Utils {
@@ -31,6 +32,19 @@ public final class Utils {
 		httpPost.setHeader("Content-type", contentType);
 	    }
 	    try (CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpPost)) {
+		responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), Charset.defaultCharset());
+	    }
+	}
+	return responseString;
+    }
+
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+	    justification = "Unfixable external code")
+    public static String sendGetRequest(final String url) throws Exception {
+	String responseString;
+	try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+	    HttpGet httpGet = new HttpGet(url);
+	    try (CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(httpGet)) {
 		responseString = EntityUtils.toString(closeableHttpResponse.getEntity(), Charset.defaultCharset());
 	    }
 	}

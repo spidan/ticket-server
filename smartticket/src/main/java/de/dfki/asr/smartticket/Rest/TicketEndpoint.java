@@ -16,6 +16,7 @@ import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,9 @@ public class TicketEndpoint {
     private static final Logger LOG = LoggerFactory.getLogger(TicketEndpoint.class);
     private static final String SERVICE_URL = "test";
 
+    @Autowired
+    private TicketWrapper ticket;
+
     @RequestMapping(value = "/ticket",
 	    method = RequestMethod.POST,
 	    consumes = "text/turtle",
@@ -39,14 +43,19 @@ public class TicketEndpoint {
     @ResponseBody
     public ResponseEntity<?> receiveTicket(@RequestParam final String targetService,
 	    @RequestBody final Model model) {
-	return createTicketFromModel(model, targetService);
+	try {
+	    return createTicketFromModel(model, targetService);
+	} catch (Exception ex) {
+	    return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
+			HttpStatus.INTERNAL_SERVER_ERROR);
+	}
     }
 
-    private ResponseEntity<?> createTicketFromModel(final Model model, final String targetService) {
+    private ResponseEntity<?> createTicketFromModel(final Model model, final String targetService) throws Exception {
 	BookingProcess booking = new BookingProcess();
 	booking.writeRequestToRepo(model);
 	byte[] ticketResult = null;
-	TicketWrapper ticket = new TicketWrapper(booking.getRepo());
+	ticket.setRepo(booking.getRepo());
 	try {
 	    ticketResult = ticket.receiveTicket(targetService);
 	} catch (IOException ex) {
@@ -64,20 +73,25 @@ public class TicketEndpoint {
     public ResponseEntity<?> receiveXmlOrJsonTicket(@RequestParam final String targetService,
 	    @RequestBody final String input)
 	    throws UnsupportedEncodingException, IOException {
-	String response = "";
 	try {
-	    response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
-		    new String[]{String.valueOf(MediaType.APPLICATION_XML),
-			String.valueOf(MediaType.APPLICATION_JSON)});
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    throw new ServiceConnectionException("DfkiTicket", e.getMessage());
+	    String response = "";
+	    try {
+		response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
+			new String[]{String.valueOf(MediaType.APPLICATION_XML),
+			    String.valueOf(MediaType.APPLICATION_JSON)});
+	    } catch (Exception e) {
+		e.printStackTrace();
+		throw new ServiceConnectionException("DfkiTicket", e.getMessage());
+	    }
+	    InputStream rdfStream = new ByteArrayInputStream(response.getBytes("utf-8"));
+	    RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
+	    Model model = new LinkedHashModel();
+	    parser.setRDFHandler(new StatementCollector(model));
+	    parser.parse(rdfStream, SERVICE_URL);
+	    return createTicketFromModel(model, targetService);
+	} catch (Exception ex) {
+	   return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
+			HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	InputStream rdfStream = new ByteArrayInputStream(response.getBytes("utf-8"));
-	RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
-	Model model = new LinkedHashModel();
-	parser.setRDFHandler(new StatementCollector(model));
-	parser.parse(rdfStream, SERVICE_URL);
-	return createTicketFromModel(model, targetService);
     }
 }
