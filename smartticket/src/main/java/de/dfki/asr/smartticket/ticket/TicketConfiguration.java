@@ -62,4 +62,14 @@ public class TicketConfiguration {
 	name = NAME;
 	iata = IATA;
     }
+
+    private String replaceTemplatedValue(final InMemoryRepo repo, final String value) {
+	if (!('@' == value.charAt(0))) {
+	    return value;
+	}
+	String rdfString = value.substring(value.indexOf('{') + 1, value.indexOf('}'));
+	String rdfValue = repo.getValue(rdfString);
+	LOG.debug(value);
+	return rdfValue;
+    }
 }
