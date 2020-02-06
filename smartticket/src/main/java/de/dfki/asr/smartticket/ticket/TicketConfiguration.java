@@ -55,8 +55,6 @@ public class TicketConfiguration {
 	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
 	URI templateUri = registry.getTemplate(serviceUri);
 	this.template = Utils.sendGetRequest(templateUri.toString()).getBytes("utf-8");
-	JSONObject tAsJson = new JSONObject(new String(this.template, "utf-8"));
-	LOG.debug(tAsJson.toString());
     }
 
     public void getData(final InMemoryRepo repo) throws UnsupportedEncodingException {
