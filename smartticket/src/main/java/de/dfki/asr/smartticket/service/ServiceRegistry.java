@@ -2,9 +2,9 @@ package de.dfki.asr.smartticket.service;
 
 import java.util.HashMap;
 
-public class TemplateRegistry extends AbstractRegistry {
+public class ServiceRegistry extends AbstractRegistry {
 
-    public TemplateRegistry() {
+    public ServiceRegistry() {
 	this.setServiceDict(new HashMap<>());
     }
 }
