@@ -48,9 +48,19 @@ public class Request {
 	CloseableHttpClient client = HttpClients.createDefault();
 	HttpPost postRequest = new HttpPost(ticketUrl);
 	HttpEntity entity = new StringEntity(configuration.getRequestObject().toString(),
-		    ContentType.APPLICATION_JSON);
+		ContentType.APPLICATION_JSON);
+	if (headers != null) {
+	    headers.forEach((key, value) -> {
+		switch (key.toLowerCase(Locale.ENGLISH)) {
+		    case "authorization-key":
+			postRequest.addHeader(key, value);
+			break;
+		    default:
+			break;
+		}
+	    });
+	}
 	postRequest.addHeader("Content-Type", "application/json");
-	postRequest.addHeader("Authorization-Key", "46fd1c14-a985-4053-bc22-708f45b7d971");
 	postRequest.setEntity(entity);
 	return client.execute(postRequest);
     }
