@@ -8,6 +8,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.rio.RDFFormat;
@@ -22,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,14 +39,18 @@ public class TicketEndpoint {
     @Autowired
     private TicketWrapper ticket;
 
+    private Map<String, String> originalHeaders = new HashMap<>();
+
     @RequestMapping(value = "/ticket",
 	    method = RequestMethod.POST,
 	    consumes = "text/turtle",
 	    produces = "image/png")
     @ResponseBody
-    public ResponseEntity<?> receiveTicket(@RequestParam final String targetService,
+    public ResponseEntity<?> receiveTicket(@RequestHeader final Map<String, String> headers,
+	    @RequestParam final String targetService,
 	    @RequestBody final Model model) {
 	try {
+	    this.originalHeaders = headers;
 	    return createTicketFromModel(model, targetService);
 	} catch (Exception ex) {
 	    return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
