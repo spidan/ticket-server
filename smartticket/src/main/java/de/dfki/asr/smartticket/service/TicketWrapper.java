@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,13 @@ public class TicketWrapper {
     public TicketWrapper() {
     }
 
-    public byte[] receiveTicket(final String targetServerName) throws IOException, URISyntaxException, Exception {
+    public byte[] receiveTicket(final Map<String, String> headers,
+	    final String targetServerName) throws IOException, URISyntaxException, Exception {
 	ticketConfig.getTemplateForService(targetServerName);
 	ticketConfig.getData(repo);
 	ticketRequest.setUrlForService(targetServerName);
 	ticketRequest.setConfiguration(ticketConfig);
+	ticketRequest.setHeaders(headers);
 	HttpResponse response = ticketRequest.send();
 	ByteArrayOutputStream ticketOutputStream = new ByteArrayOutputStream();
 	response.getEntity().getContent().transferTo(ticketOutputStream);

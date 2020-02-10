@@ -11,6 +11,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,13 @@ public class Request {
 
     private String ticketUrl = "http://localhost:8083/ticket";
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private TicketConfiguration configuration;
+
+    @Getter
+    @Setter
+    private Map<String, String> headers;
 
     public Request() {
 	this.configuration = new TicketConfiguration();

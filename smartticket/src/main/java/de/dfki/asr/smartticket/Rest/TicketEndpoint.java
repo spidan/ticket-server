@@ -64,7 +64,7 @@ public class TicketEndpoint {
 	byte[] ticketResult = null;
 	ticket.setRepo(booking.getRepo());
 	try {
-	    ticketResult = ticket.receiveTicket(targetService);
+	    ticketResult = ticket.receiveTicket(originalHeaders, targetService);
 	} catch (IOException ex) {
 	    LOG.error("Error contacting target service: " + ex.getMessage());
 	    return new ResponseEntity<>("Error contacting target service: " + ex.getMessage(),
