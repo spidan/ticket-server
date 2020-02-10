@@ -32,9 +32,9 @@ public class TicketConfiguration {
 
     }
 
-    public void getTemplateForService(final URI serviceUri) throws UnsupportedEncodingException, Exception {
+    public void getTemplateForService(final String serviceName) throws UnsupportedEncodingException, Exception {
 	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
-	URI templateUri = registry.getTemplate(serviceUri);
+	URI templateUri = registry.getTemplate(serviceName);
 	this.template = Utils.sendGetRequest(templateUri.toString()).getBytes("utf-8");
     }
 

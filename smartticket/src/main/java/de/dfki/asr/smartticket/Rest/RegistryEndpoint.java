@@ -1,5 +1,6 @@
 package de.dfki.asr.smartticket.Rest;
 
+import de.dfki.asr.smartticket.service.ServiceRegistry;
 import java.net.URI;
 import de.dfki.asr.smartticket.service.TemplateRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,14 @@ public class RegistryEndpoint {
 
     @RequestMapping(value = "/serviceTemplate",
 	    method = RequestMethod.POST)
-    public ResponseEntity<?> registerServiceTemplate(@RequestParam final URI serviceUri,
+    public ResponseEntity<?> registerServiceTemplate(@RequestParam final String serviceName,
+	    @RequestParam final URI serviceUri,
 	    @RequestParam final URI templateUri) {
 	try {
-	    TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
-	    registry.registerTemplate(serviceUri, templateUri);
+	    TemplateRegistry templates = (TemplateRegistry) context.getBean("templateRegistry");
+	    ServiceRegistry services = (ServiceRegistry) context.getBean("serviceRegistry");
+	    templates.registerTemplate(serviceName, templateUri);
+	    services.registerTemplate(serviceName, serviceUri);
 	} catch (Exception ex) {
 	    return new ResponseEntity<>("Could not register mapping: " + ex.getMessage(),
 		    HttpStatus.INTERNAL_SERVER_ERROR);
@@ -33,10 +37,10 @@ public class RegistryEndpoint {
 
     @RequestMapping(value = "/serviceTemplate",
 		method = RequestMethod.GET)
-    public ResponseEntity<?> getTemplateForService(@RequestParam final URI serviceUri) {
+    public ResponseEntity<?> getTemplateForService(@RequestParam final String serviceName) {
 	TemplateRegistry registry = (TemplateRegistry) context.getBean("templateRegistry");
 	try {
-	    URI templateUri = registry.getTemplate(serviceUri);
+	    URI templateUri = registry.getTemplate(serviceName);
 	    return new ResponseEntity<>(templateUri.toString(), HttpStatus.OK);
 	} catch (Exception ex) {
 	    return new ResponseEntity<>("Could not get mapping: " + ex.getMessage(),

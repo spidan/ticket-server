@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +21,9 @@ public class TicketWrapper {
     @Autowired
     private TicketConfiguration ticketConfig;
 
+    @Autowired
+    private Request ticketRequest;
+
     private static final Logger LOG = LoggerFactory.getLogger(TicketWrapper.class);
     @Getter @Setter
     private InMemoryRepo repo;
@@ -29,10 +31,11 @@ public class TicketWrapper {
     public TicketWrapper() {
     }
 
-    public byte[] receiveTicket(final String targetServerUri) throws IOException, URISyntaxException, Exception {
-	ticketConfig.getTemplateForService(new URI(targetServerUri));
+    public byte[] receiveTicket(final String targetServerName) throws IOException, URISyntaxException, Exception {
+	ticketConfig.getTemplateForService(targetServerName);
 	ticketConfig.getData(repo);
-	Request ticketRequest = new Request(ticketConfig, targetServerUri);
+	ticketRequest.setUrlForService(targetServerName);
+	ticketRequest.setConfiguration(ticketConfig);
 	HttpResponse response = ticketRequest.send();
 	ByteArrayOutputStream ticketOutputStream = new ByteArrayOutputStream();
 	response.getEntity().getContent().transferTo(ticketOutputStream);
