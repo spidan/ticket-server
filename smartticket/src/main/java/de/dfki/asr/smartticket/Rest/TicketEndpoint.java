@@ -90,15 +90,21 @@ public class TicketEndpoint {
 		e.printStackTrace();
 		throw new ServiceConnectionException("DfkiTicket", e.getMessage());
 	    }
-	    InputStream rdfStream = new ByteArrayInputStream(response.getBytes("utf-8"));
-	    RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
-	    Model model = new LinkedHashModel();
-	    parser.setRDFHandler(new StatementCollector(model));
-	    parser.parse(rdfStream, SERVICE_URL);
+	    this.originalHeaders = headers;
 	    return createTicketFromModel(model, targetService);
 	} catch (Exception ex) {
 	   return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
 			HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+    }
+
+    private Model parseToTurtle(final String response) throws RDFHandlerException,
+	    UnsupportedRDFormatException, UnsupportedEncodingException, IOException, RDFParseException {
+	InputStream rdfStream = new ByteArrayInputStream(response.getBytes("utf-8"));
+	RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
+	Model model = new LinkedHashModel();
+	parser.setRDFHandler(new StatementCollector(model));
+	parser.parse(rdfStream, SERVICE_URL);
+	return model;
     }
 }
