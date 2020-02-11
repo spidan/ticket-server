@@ -55,7 +55,7 @@ public class TicketEndpoint {
 	    return createTicketFromModel(model, targetService);
 	} catch (Exception ex) {
 	    return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
-			HttpStatus.INTERNAL_SERVER_ERROR);
+		    HttpStatus.INTERNAL_SERVER_ERROR);
 	}
     }
 
@@ -85,15 +85,15 @@ public class TicketEndpoint {
 	try {
 	    this.originalHeaders = headers;
 	    String mappingEndpoint = Utils.RML_SERVICE_URL
-			    .concat("?mappingFile=")
-			    .concat(mappingFileName);
+		    .concat("?mappingFile=")
+		    .concat(mappingFileName);
 	    String response = Utils.sendPostRequest(mappingEndpoint, input,
 		    headers.get("content-type"));
 	    Model model = parseToTurtle(response);
 	    return createTicketFromModel(model, targetService);
 	} catch (Exception ex) {
-	   return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
-			HttpStatus.INTERNAL_SERVER_ERROR);
+	    return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
+		    HttpStatus.INTERNAL_SERVER_ERROR);
 	}
     }
 
