@@ -1,6 +1,5 @@
 package de.dfki.asr.smartticket.Rest;
 
-import de.dfki.asr.smartticket.exceptions.ServiceConnectionException;
 import de.dfki.asr.smartticket.service.BookingProcess;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
@@ -84,16 +83,13 @@ public class TicketEndpoint {
 	    @RequestParam final String mappingFileName,
 	    @RequestBody final String input) throws UnsupportedEncodingException, IOException {
 	try {
-	    String response = "";
-	    try {
-		response = Utils.sendPostRequest(Utils.DFKI_TICKET_SERVICE_URL, input,
-			new String[]{String.valueOf(MediaType.APPLICATION_XML),
-			    String.valueOf(MediaType.APPLICATION_JSON)});
-	    } catch (Exception e) {
-		e.printStackTrace();
-		throw new ServiceConnectionException("DfkiTicket", e.getMessage());
-	    }
 	    this.originalHeaders = headers;
+	    String mappingEndpoint = Utils.RML_SERVICE_URL
+			    .concat("?mappingFile=")
+			    .concat(mappingFileName);
+	    String response = Utils.sendPostRequest(mappingEndpoint, input,
+		    headers.get("content-type"));
+	    Model model = parseToTurtle(response);
 	    return createTicketFromModel(model, targetService);
 	} catch (Exception ex) {
 	   return new ResponseEntity("Could not get ticket: " + ex.getMessage(),
