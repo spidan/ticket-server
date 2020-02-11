@@ -16,7 +16,7 @@ public final class Utils {
 
     }
 
-    public static final String DFKI_TICKET_SERVICE_URL = "http://localhost:8801/maptordf";
+    public static final String RML_SERVICE_URL = "http://localhost:8801/maptordf";
 
     @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
 	    justification = "Unfixable external code")
