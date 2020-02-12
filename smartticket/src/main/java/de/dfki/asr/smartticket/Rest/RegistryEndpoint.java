@@ -1,13 +1,16 @@
 package de.dfki.asr.smartticket.Rest;
 
+import de.dfki.asr.smartticket.data.RDFServiceRegistry;
 import de.dfki.asr.smartticket.service.ServiceRegistry;
 import java.net.URI;
 import de.dfki.asr.smartticket.service.TemplateRegistry;
+import org.eclipse.rdf4j.model.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +20,9 @@ public class RegistryEndpoint {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    private RDFServiceRegistry serviceRegistry;
 
     @RequestMapping(value = "/serviceTemplate",
 	    method = RequestMethod.POST)
@@ -32,6 +38,14 @@ public class RegistryEndpoint {
 	    return new ResponseEntity<>("Could not register mapping: " + ex.getMessage(),
 		    HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/serviceTemplate",
+	    method = RequestMethod.POST,
+	    consumes = "text/turtle")
+    public ResponseEntity<?> registerRDFTemplate(@RequestBody final Model serviceModel) {
+	serviceRegistry.write(serviceModel);
 	return new ResponseEntity<>(HttpStatus.OK);
     }
 
