@@ -1,5 +1,6 @@
 package de.dfki.asr.smartticket;
 
+import de.dfki.asr.smartticket.data.RDFServiceRegistry;
 import de.dfki.asr.smartticket.service.ServiceRegistry;
 import de.dfki.asr.smartticket.service.TemplateRegistry;
 import org.springframework.boot.SpringApplication;
@@ -25,5 +26,11 @@ public class SmartTicketApplication {
     @Scope("singleton")
     public ServiceRegistry serviceRegistry() {
 	return new ServiceRegistry();
+    }
+
+    @Bean
+    @Scope("singleton")
+    public RDFServiceRegistry rdfServiceRegistry() {
+	return new RDFServiceRegistry();
     }
 }
