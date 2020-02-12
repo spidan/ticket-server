@@ -1,5 +1,6 @@
 package de.dfki.asr.smartticket.Rest;
 
+import de.dfki.asr.smartticket.data.RDFServiceRegistry;
 import de.dfki.asr.smartticket.service.ServiceRegistry;
 import java.net.URI;
 import de.dfki.asr.smartticket.service.TemplateRegistry;
@@ -17,6 +18,9 @@ public class RegistryEndpoint {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    RDFServiceRegistry serviceRegistry;
 
     @RequestMapping(value = "/serviceTemplate",
 	    method = RequestMethod.POST)
