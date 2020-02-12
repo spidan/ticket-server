@@ -20,7 +20,7 @@ public class RegistryEndpoint {
     private ApplicationContext context;
 
     @Autowired
-    RDFServiceRegistry serviceRegistry;
+    private RDFServiceRegistry serviceRegistry;
 
     @RequestMapping(value = "/serviceTemplate",
 	    method = RequestMethod.POST)
