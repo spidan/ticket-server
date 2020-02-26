@@ -1,7 +1,7 @@
 package de.dfki.asr.smartticket.ticket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import de.dfki.asr.smartticket.service.ServiceRegistry;
+import de.dfki.asr.smartticket.data.RDFServiceRegistry;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -11,19 +11,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Request {
 
     @Autowired
-    private ApplicationContext context;
+    private RDFServiceRegistry serviceRegistry;
 
     private String ticketUrl = "http://localhost:8083/ticket";
 
@@ -39,9 +39,8 @@ public class Request {
 	this.configuration = new TicketConfiguration();
     }
 
-    public void setUrlForService(final String serviceName) {
-	ServiceRegistry services = (ServiceRegistry) context.getBean("serviceRegistry");
-	this.ticketUrl = services.getTemplate(serviceName).toString();
+    public void setUrlForService(final String serviceName) throws URISyntaxException {
+	this.ticketUrl = serviceRegistry.getServiceEndpoint(serviceName).toString();
     }
 
     public HttpResponse send() throws JsonProcessingException, IOException {
