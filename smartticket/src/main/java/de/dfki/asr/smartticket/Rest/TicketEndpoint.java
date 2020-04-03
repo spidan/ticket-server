@@ -1,7 +1,6 @@
 package de.dfki.asr.smartticket.Rest;
 
 import de.dfki.asr.smartticket.service.BookingProcess;
-import de.dfki.asr.smartticket.service.JsonTemplate;
 import de.dfki.asr.smartticket.service.TicketWrapper;
 import de.dfki.asr.smartticket.service.Utils;
 import java.io.ByteArrayInputStream;
@@ -97,16 +96,6 @@ public class TicketEndpoint {
 		    HttpStatus.INTERNAL_SERVER_ERROR);
 	}
     }
-
-	@RequestMapping(value = "/testTemplate",
-			method = RequestMethod.POST,
-			consumes = {"application/json"})
-	@ResponseBody
-	public ResponseEntity<?> testTemplateProcessing(@RequestBody final String input) {
-		JsonTemplate template = new JsonTemplate();
-		template.doStuffWithJSON(input);
-		return new ResponseEntity(HttpStatus.OK);
-	}
 
     private Model parseToTurtle(final String response) throws RDFHandlerException,
 	    UnsupportedRDFormatException, UnsupportedEncodingException, IOException, RDFParseException {
