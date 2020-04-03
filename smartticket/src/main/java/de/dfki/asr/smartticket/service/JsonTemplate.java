@@ -11,11 +11,16 @@ public class JsonTemplate {
 	private static final String ACCESSOR = "accessor";
 	private static final String DEFAULT = "default";
 
+	private final String templateAsString;
 	private JSONObject templateAsJson;
 	private JSONObject resultJson;
 
 	public void doStuffWithJSON(final String schemaString) {
 		templateAsJson = new JSONObject(schemaString);
+	public JsonTemplate(final String template) {
+		this.templateAsString = template;
+	}
+
 		JSONObject properties = templateAsJson.getJSONObject("properties");
 		JSONObject result = generateJsonFromProperties(properties);
 		LOG.info(result.toString());
