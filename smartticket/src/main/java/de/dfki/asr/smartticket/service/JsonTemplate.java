@@ -49,4 +49,10 @@ public class JsonTemplate {
 		}
 		resultJson.append(key, property.get(ACCESSOR));
 	}
+
+    private String replaceTemplatedValue(final InMemoryRepo repo, final String value) {
+		String rdfValue = repo.getValue(value);
+		LOG.debug(value);
+		return rdfValue;
+    }
 }
