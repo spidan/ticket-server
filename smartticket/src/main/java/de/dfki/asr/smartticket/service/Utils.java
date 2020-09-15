@@ -7,6 +7,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import java.nio.charset.Charset;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.http.client.methods.HttpGet;
 import org.graalvm.compiler.core.common.SuppressFBWarnings;
 
@@ -16,7 +18,9 @@ public final class Utils {
 
     }
 
-    public static final String RML_SERVICE_URL = "http://localhost:8801/maptordf";
+	@Getter
+	@Setter
+    private static String rmlServiceUrl = "http://localhost:8801/maptordf";
 
     @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
 	    justification = "Unfixable external code")

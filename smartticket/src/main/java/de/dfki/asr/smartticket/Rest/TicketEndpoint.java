@@ -84,7 +84,7 @@ public class TicketEndpoint {
 	    @RequestBody final String input) throws UnsupportedEncodingException, IOException {
 	try {
 	    this.originalHeaders = headers;
-	    String mappingEndpoint = Utils.RML_SERVICE_URL
+	    String mappingEndpoint = Utils.getRmlServiceUrl()
 		    .concat("?mappingFile=")
 		    .concat(mappingFileName);
 	    String response = Utils.sendPostRequest(mappingEndpoint, input,
