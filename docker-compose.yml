@@ -1,0 +1,16 @@
+version: '3'
+services:
+  ticketservice:
+    build: ./smartticket
+    ports:
+      - "8090:8090"
+    links:
+      - rmlmapper
+    volumes:
+      - .:/registry
+  rmlmapper:
+    build: ./RMLMappingService
+    ports:
+      - "8801:8801"
+    volumes:
+      - .:/Templates
