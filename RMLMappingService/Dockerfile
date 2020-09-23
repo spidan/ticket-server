@@ -1,4 +1,5 @@
-FROM openjdk:8
-ADD target/dfki-ticket-service.jar dfki-ticket-service.jar
-EXPOSE 8800
-ENTRYPOINT ["java","-jar","dfki-ticket-service.jar"]
+FROM adoptopenjdk:11-jre-hotspot
+RUN mkdir -p /rmlmapper/app
+COPY /target/RMLMappingService.jar rmlmapper/app
+EXPOSE 8801
+CMD ["java", "-jar", "/rmlmapper/app/RMLMappingService.jar"]
