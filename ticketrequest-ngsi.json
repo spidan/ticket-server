@@ -1,0 +1,29 @@
+{
+	"id": "booking1",
+	"type": "SmartMaaS-Booking",
+	"Linie124": {
+		"type": "TioCoachService",
+		"value": {
+			"from": "SaarVV-Uni-Campus",
+			"to": "SaarVV-Hauptbahnhof"
+		}
+	},
+	"Ticket1": {
+		"type": "TioTicketPlaceholder",
+		"value" : {
+				"label": "Busticket von Universität zu Hauptbahnhof",
+				"accessTo": "Linie124"
+		}
+	},
+	"Offer1":	{
+		"type": "Offering",
+		"value": {
+				"name": "Tagesticket",
+				"includes": "Ticket1",
+				"Validity": {
+					"from": "2019-10-01T08:00:00",
+					"to":	"2019-10-02T08:00:00"
+				}
+		}
+	}	
+}
