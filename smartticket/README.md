@@ -35,6 +35,17 @@ With the body containing the request following the API expected by the *client s
 4. The response of the target service will be received by the InterOp layer and forwarded to the initial client.
 
 ### Registering services to be called
-Registering target services in the interop layer is done by sending a *ttl RDF* to the registry endpoint that describes the service to be called.
+Registering target services in the interop layer is done by sending a *ttl RDF* to the registry endpoint that describes the service to be called. This ttl needs to provide information about the endpoint when the specific service is addressed, as well as the location of the request template to be used to form a valid request for that service.
+```
+@prefix : <http://www.smart-maas.eu/#> .
+@prefix wsdl: <https://www.w3.org/ns/wsdl20-rdf#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:SmartMaaSServiceDescription a wsdl:Description .
+
+:[ID of the service to be called] a wsdl:service ;
+	wsdl:endpoint [Endpoint to be called for this service] ;
+	:hasTemplate [location of the request template to be used] .
+```
 ### Request Templates and Mapping Files
 ### Endpoints
