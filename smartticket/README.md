@@ -48,4 +48,35 @@ Registering target services in the interop layer is done by sending a *ttl RDF* 
 	:hasTemplate [location of the request template to be used] .
 ```
 ### Request Templates and Mapping Files
+Two types of configuration files are necessary to make sure the communication between two services works as expected: a *request template* that describes the structure and necessary data for the client service, and a *mapping file* that describes how to lift the data send to a semantic level with the help of the previously mentioned *mapping service*
+
+#### Request templates
+
+An example for a simple JSON request template is given below. For each property that sould appear in the acutal request, the *type* can be specified, and at least a *default* value or an *accessor* needs to be provided. In case of an accessor, a SPARQL SELECT query will be performed on the semantic representation of the service call, using the given resource.
+```
+{
+	"$id": "https://example.com/ticket.reguest.schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Ticket Booking",
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string",
+			"default": "booking1",
+		},
+		"begin": {
+			"type": "dateTime",
+			"accessor": "gr:validFrom"
+		},
+		"end": {
+			"type": "dateTime",
+			"accessor": "gr:validThrough"
+		}
+	}
+}
+```
+
+#### Mapping Files
+
+For a detailed explanation on how to write RML mapping files, see https://rml.io/specs/rml/
 ### Endpoints
