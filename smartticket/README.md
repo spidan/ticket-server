@@ -80,3 +80,9 @@ An example for a simple JSON request template is given below. For each property 
 
 For a detailed explanation on how to write RML mapping files, see https://rml.io/specs/rml/
 ### Endpoints
+
+`POST /rmlService?serviceURL=[RMLMappingService endpoint]` : Set the address of the RML mapping service to be used
+
+`POST /serviceTemplate` : Register a new service, providing a ttl service template as payload
+
+`POST /ticket?targetService=<ServiceName as given in the registry>&mappingFileName=<Filename of the mapping file to be used>` : Lift the request given in the body on a semantic level using the given mapping file, and perform a request to the specified service.
