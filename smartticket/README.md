@@ -2,6 +2,8 @@
 
 The **Smart Interoperability Layer** (InterOp Layer) acts as a flexible, light weight mapping service to allow communication between a range of different REST based web service APIs. Making use of *RML*, provided by an arbitrary remote mapping service, and the corresponding *rml mapping files*, requests are lifted to a *semantic level* from where requests for target services can be queried.
 
+For a quick start, use the provided collection `InterOpLayerRequests.json` in the root directory.
+
 ## Installation
 Build the project using
 ```
